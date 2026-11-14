@@ -76,7 +76,7 @@ class Api {
   /* ---------- Ajustes ---------- */
   static Future<String> getWhatsApp() async {
     final r = await http.get(_u('/api/settings'));
-    if (r.statusCode != 200) return '51999999999';
+    if (r.statusCode != 200) return '573223201720';
     return (jsonDecode(r.body) as Map)['whatsapp'];
   }
 
