@@ -39,7 +39,7 @@ Esto levanta todo en **http://localhost:3000**:
 | ---------------- | --------------------------------------------- | --------------- |
 | `PORT`           | Puerto del servidor                           | `3000`          |
 | `ADMIN_PASSWORD` | Clave del panel del dueño                     | `trianmax2026`  |
-| `WHATSAPP_NUMBER`| Número inicial de WhatsApp (se edita en Ajustes) | `51999999999`   |
+| `WHATSAPP_NUMBER`| Número inicial de WhatsApp (se edita en Ajustes) | `573223201720`   |
 
 ## Desarrollo de la app Flutter
 
