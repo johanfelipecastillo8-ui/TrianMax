@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:html' as html;
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import '../../data/services/api_service.dart';
 import '../../widgets/app_footer.dart';
 import '../../widgets/cart_drawer.dart';
 import '../../widgets/product_card.dart';
+import '../../widgets/product_image.dart';
 import '../../widgets/product_sheet.dart';
 
 class CatalogPage extends StatefulWidget {
@@ -152,7 +154,7 @@ class _CatalogPageState extends State<CatalogPage> {
         ..writeln('Entrega: ${shipLabels[order.shipMethod]}')
         ..writeln('Pago: ${order.payment}');
       if (order.note.isNotEmpty) msg.writeln('Nota: ${order.note}');
-      html.window.open('https://wa.me/$whatsapp?text=${Uri.encodeComponent(msg.toString())}', '_blank');
+      html.window.open('https://wa.me{Uri.encodeComponent(msg.toString())}', '_blank');
     } on ApiException catch (e) {
       await _fetch();
       scaffold.showSnackBar(SnackBar(content: Text(e.toString()), backgroundColor: T.danger));
@@ -161,7 +163,7 @@ class _CatalogPageState extends State<CatalogPage> {
 
   void askInfo() {
     html.window.open(
-      'https://wa.me/$whatsapp?text=${Uri.encodeComponent('Hola TRIAN MAX, quisiera más información sobre los productos del catálogo 2026.')}',
+      'https://wa.me{Uri.encodeComponent('Hola TRIAN MAX, quisiera más información sobre los productos del catálogo 2026.')}',
       '_blank',
     );
   }
@@ -169,6 +171,7 @@ class _CatalogPageState extends State<CatalogPage> {
   @override
   Widget build(BuildContext context) {
     final cats = ['Todos', ...products.map((p) => p.category).toSet()];
+    final featured = products.where((p) => p.image != null && p.image!.isNotEmpty).take(6).toList();
     final filtered = products.where((p) =>
         (activeCat == 'Todos' || p.category == activeCat) &&
         '${p.name} ${p.category} ${p.description}'.toLowerCase().contains(query)).toList();
@@ -235,6 +238,13 @@ class _CatalogPageState extends State<CatalogPage> {
                   onRefresh: _fetch,
                   child: CustomScrollView(slivers: [
                     SliverToBoxAdapter(child: _hero()),
+                    if (featured.isNotEmpty)
+                      SliverToBoxAdapter(
+                        child: _FeaturedCarousel(
+                          products: featured,
+                          onSelect: (product) => openProduct(product as Product),
+                        ),
+                      ),
                     SliverToBoxAdapter(child: _toolbar(cats)),
                     filtered.isEmpty
                         ? const SliverFillRemaining(
@@ -252,105 +262,271 @@ class _CatalogPageState extends State<CatalogPage> {
                               ),
                               delegate: SliverChildBuilderDelegate(
                                 (c, i) => ProductCard(product: filtered[i], onView: () => openProduct(filtered[i]), onAdd: () => addToCart(filtered[i].id, 1)),
-                                childCount: filtered.length,
-                              ),
-                            ),
-                          ),
-                    const SliverToBoxAdapter(child: AppFooter()),
-                  ]),
-                ),
-    );
-  }
-
-  Widget _hero() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 48, 20, 36),
-      decoration: const BoxDecoration(
-        gradient: RadialGradient(center: Alignment(0, -.8), radius: 1.4, colors: [Color(0x22D4AF37), T.bg]),
-      ),
-      child: Column(children: [
-        const Text('CATÁLOGO 2026', style: TextStyle(letterSpacing: 10, fontSize: 12, color: T.muted)),
-        const SizedBox(height: 14),
-        ShaderMask(
-          shaderCallback: (r) => T.goldGradient.createShader(r),
-          child: Text('TRIAN MAX', style: T.serif.copyWith(fontSize: 56, fontWeight: FontWeight.w700, color: Colors.white)),
-        ),
-        const SizedBox(height: 10),
-        Text('Todo lo que buscas, en un solo lugar', style: T.serif.copyWith(fontStyle: FontStyle.italic, color: T.muted, fontSize: 15)),
-        const SizedBox(height: 18),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(border: Border.all(color: T.line), borderRadius: BorderRadius.circular(99), color: const Color(0x10D4AF37)),
-          child: const Row(mainAxisSize: MainAxisSize.min, children: [
-            Icon(Icons.link_rounded, size: 13, color: T.goldLight),
-            SizedBox(width: 6),
-            Text('catalogo.org.pe/trian-max', style: TextStyle(color: T.goldLight, fontSize: 12)),
-          ]),
-        ),
-        const SizedBox(height: 22),
-        Container(width: 70, height: 2, decoration: BoxDecoration(gradient: T.goldGradient, borderRadius: BorderRadius.circular(2))),
-      ]),
-    );
-  }
-
-  Widget _toolbar(List<String> cats) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 6, 16, 8),
-      child: Column(children: [
-        TextField(
-          onChanged: (v) => setState(() => query = v.trim().toLowerCase()),
-          style: const TextStyle(color: T.text),
-          decoration: const InputDecoration(
-            hintText: 'Buscar en el catálogo...',
-            prefixIcon: Icon(Icons.search, color: T.muted),
-          ),
-        ),
-        const SizedBox(height: 12),
-        SizedBox(
-          height: 44,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: cats.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 10),
-            itemBuilder: (_, i) {
-              final active = cats[i] == activeCat;
-              return GestureDetector(
-                onTap: () => setState(() => activeCat = cats[i]),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  decoration: BoxDecoration(
-                    gradient: active ? T.goldGradient : null,
-                    color: active ? null : T.surface,
-                    borderRadius: BorderRadius.circular(99),
-                    border: Border.all(color: active ? Colors.transparent : const Color(0x14FFFFFF)),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(cats[i], style: TextStyle(color: active ? const Color(0xFF151005) : T.muted, fontWeight: FontWeight.w700, fontSize: 13)),
-                ),
-              );
-            },
-          ),
-        ),
-      ]),
-    );
-  }
+childCount: filtered.length,
+),
+),
+),
+const SliverToBoxAdapter(child: AppFooter()),
+]),
+),
+);
 }
-
+Widget _hero() {
+return Container(
+width: double.infinity,
+padding: const EdgeInsets.fromLTRB(20, 48, 20, 28),
+decoration: const BoxDecoration(
+gradient: RadialGradient(center: Alignment(0, -.8), radius: 1.4, colors: [Color(0x22D4AF37), T.bg]),
+),
+child: Column(children: [
+const Text('CATÁLOGO 2026', style: TextStyle(letterSpacing: 10, fontSize: 12, color: T.muted)),
+const SizedBox(height: 14),
+ShaderMask(
+shaderCallback: (r) => T.goldGradient.createShader(r),
+child: Text('TRIAN MAX', style: T.serif.copyWith(fontSize: 56, fontWeight: FontWeight.w700, color: Colors.white)),
+),
+const SizedBox(height: 10),
+Text('Todo lo que buscas, en un solo lugar', style: T.serif.copyWith(fontStyle: FontStyle.italic, color: T.muted, fontSize: 15)),
+const SizedBox(height: 18),
+Container(
+padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+decoration: BoxDecoration(border: Border.all(color: T.line), borderRadius: BorderRadius.circular(99), color: const Color(0x10D4AF37)),
+child: const Row(mainAxisSize: MainAxisSize.min, children: [
+Icon(Icons.link_rounded, size: 13, color: T.goldLight),
+SizedBox(width: 6),
+Text('catalogo.org.pe/trian-max', style: TextStyle(color: T.goldLight, fontSize: 12)),
+]),
+),
+const SizedBox(height: 22),
+Container(width: 70, height: 2, decoration: BoxDecoration(gradient: T.goldGradient, borderRadius: BorderRadius.circular(2))),
+]),
+);
+}
+Widget _toolbar(List cats) {
+return Padding(
+padding: const EdgeInsets.fromLTRB(16, 6, 16, 8),
+child: Column(children: [
+TextField(
+onChanged: (v) => setState(() => query = v.trim().toLowerCase()),
+style: const TextStyle(color: T.text),
+decoration: const InputDecoration(
+hintText: 'Buscar en el catálogo...',
+prefixIcon: Icon(Icons.search, color: T.muted),
+),
+),
+const SizedBox(height: 12),
+SizedBox(
+height: 44,
+child: ListView.separated(
+scrollDirection: Axis.horizontal,
+itemCount: cats.length,
+separatorBuilder: (_, __) => const SizedBox(width: 10),
+itemBuilder: (_, i) {
+final active = cats[i] == activeCat;
+return GestureDetector(
+onTap: () => setState(() => activeCat = cats[i]),
+child: AnimatedContainer(
+duration: const Duration(milliseconds: 180),
+padding: const EdgeInsets.symmetric(horizontal: 20),
+decoration: BoxDecoration(
+gradient: active ? T.goldGradient : null,
+color: active ? null : T.surface,
+borderRadius: BorderRadius.circular(99),
+border: Border.all(color: active ? Colors.transparent : const Color(0x14FFFFFF)),
+),
+alignment: Alignment.center,
+child: Text(cats[i], style: TextStyle(color: active ? const Color(0xFF151005) : T.muted, fontWeight: FontWeight.w700, fontSize: 13)),
+),
+);
+},
+),
+),
+]),
+);
+}
+}
+class _FeaturedCarousel extends StatefulWidget {
+final List products;
+final ValueChanged onSelect;
+const _FeaturedCarousel({required this.products, required this.onSelect});
+@override
+State<_FeaturedCarousel> createState() => _FeaturedCarouselState();
+}
+class _FeaturedCarouselState extends State<_FeaturedCarousel> {
+final PageController _ctrl = PageController();
+int _index = 0;
+Timer? _timer;
+@override
+void initState() {
+super.initState();
+_startAutoPlay();
+}
+void _startAutoPlay() {
+_timer?.cancel();
+if (widget.products.length > 1) {
+_timer = Timer.periodic(const Duration(seconds: 4), (timer) {
+if (!_ctrl.hasClients) return;
+final next = (_index + 1) % widget.products.length;
+_ctrl.animateToPage(
+next,
+duration: const Duration(milliseconds: 450),
+curve: Curves.easeInOut,
+);
+});
+}
+}
+@override
+void didUpdateWidget(covariant _FeaturedCarousel oldWidget) {
+super.didUpdateWidget(oldWidget);
+if (oldWidget.products.length != widget.products.length) {
+_index = 0;
+_startAutoPlay();
+}
+}
+@override
+void dispose() {
+_timer?.cancel();
+_ctrl.dispose();
+super.dispose();
+}
+@override
+Widget build(BuildContext context) {
+return Padding(
+padding: const EdgeInsets.fromLTRB(16, 0, 16, 18),
+child: Center(
+child: ConstrainedBox(
+constraints: const BoxConstraints(maxWidth: 820),
+child: Column(
+children: [
+SizedBox(
+height: 175,
+child: PageView.builder(
+controller: _ctrl,
+itemCount: widget.products.length,
+onPageChanged: (i) => setState(() => _index = i),
+itemBuilder: (context, i) {
+final p = widget.products[i];
+return GestureDetector(
+onTap: () => widget.onSelect(p),
+child: Container(
+margin: const EdgeInsets.symmetric(horizontal: 4),
+padding: const EdgeInsets.all(14),
+decoration: BoxDecoration(
+color: T.surface,
+borderRadius: BorderRadius.circular(18),
+border: Border.all(color: T.line),
+gradient: const LinearGradient(
+begin: Alignment.topLeft,
+end: Alignment.bottomRight,
+colors: [Color(0x1AD4AF37), T.surface],
+),
+),
+child: Row(
+children: [
+ClipRRect(
+borderRadius: BorderRadius.circular(12),
+child: SizedBox(
+width: 140,
+height: double.infinity,
+child: ProductImage(image: p.image, category: p.category),
+),
+),
+const SizedBox(width: 16),
+Expanded(
+child: Column(
+crossAxisAlignment: CrossAxisAlignment.start,
+mainAxisAlignment: MainAxisAlignment.center,
+children: [
+Container(
+padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+decoration: BoxDecoration(
+color: const Color(0x22D4AF37),
+borderRadius: BorderRadius.circular(99),
+border: Border.all(color: T.line),
+),
+child: Text(
+'DESTACADO · ${p.category.toUpperCase()}',
+maxLines: 1,
+overflow: TextOverflow.ellipsis,
+style: const TextStyle(color: T.goldLight, fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 1),
+),
+),
+const SizedBox(height: 10),
+Text(
+p.name,
+maxLines: 2,
+overflow: TextOverflow.ellipsis,
+style: const TextStyle(color: T.text, fontSize: 17, fontWeight: FontWeight.w800),
+),
+const SizedBox(height: 8),
+Row(
+children: [
+Text(
+fmt(p.price),
+style: const TextStyle(color: T.gold, fontSize: 18, fontWeight: FontWeight.w800),
+),
+if (p.oldPrice != null && p.oldPrice! > p.price) ...[
+const SizedBox(width: 8),
+Text(
+fmt(p.oldPrice!),
+style: const TextStyle(
+color: T.muted,
+fontSize: 13,
+decoration: TextDecoration.lineThrough,
+),
+),
+],
+],
+),
+],
+),
+),
+const Icon(Icons.chevron_right_rounded, color: T.goldLight, size: 26),
+],
+),
+),
+);
+},
+),
+),
+if (widget.products.length > 1) ...[
+const SizedBox(height: 10),
+Row(
+mainAxisAlignment: MainAxisAlignment.center,
+children: List.generate(widget.products.length, (i) {
+final active = i == _index;
+return AnimatedContainer(
+duration: const Duration(milliseconds: 220),
+margin: const EdgeInsets.symmetric(horizontal: 4),
+width: active ? 20 : 7,
+height: 7,
+decoration: BoxDecoration(
+color: active ? T.gold : T.line,
+borderRadius: BorderRadius.circular(99),
+),
+);
+}),
+),
+],
+],
+),
+),
+),
+);
+}
+}
 class _ErrorState extends StatelessWidget {
-  final String message;
-  final VoidCallback onRetry;
-  const _ErrorState({required this.message, required this.onRetry});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
-      const Icon(Icons.cloud_off_outlined, color: T.muted, size: 46),
-      const SizedBox(height: 12),
-      Text(message, style: const TextStyle(color: T.muted)),
-      const SizedBox(height: 14),
-      OutlinedButton(onPressed: onRetry, child: const Text('Reintentar')),
-    ]));
-  }
+final String message;
+final VoidCallback onRetry;
+const _ErrorState({required this.message, required this.onRetry});
+@override
+Widget build(BuildContext context) {
+return Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
+const Icon(Icons.cloud_off_outlined, color: T.muted, size: 46),
+const SizedBox(height: 12),
+Text(message, style: const TextStyle(color: T.muted)),
+const SizedBox(height: 14),
+OutlinedButton(onPressed: onRetry, child: const Text('Reintentar')),
+]));
+}
 }
