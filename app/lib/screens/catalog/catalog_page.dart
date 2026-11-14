@@ -163,7 +163,7 @@ class _CatalogPageState extends State<CatalogPage> {
 
   void askInfo() {
     html.window.open(
-      'https://wa.me{Uri.encodeComponent('Hola TRIAN MAX, quisiera más información sobre los productos del catálogo 2026.')}',
+      'https://wa.me/?text=${Uri.encodeComponent('Hola TRIAN MAX, quisiera más información sobre los productos del catálogo 2026.')}',
       '_blank',
     );
   }
