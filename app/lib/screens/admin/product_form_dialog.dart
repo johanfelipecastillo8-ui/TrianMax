@@ -22,7 +22,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
   late final stockCtrl = TextEditingController(text: widget.product == null ? '' : '${widget.product!.stock}');
   late final descCtrl = TextEditingController(text: widget.product?.description ?? '');
   String? existingImage;
-  List<int>? pickedBytes;
+  Uint8List? pickedBytes;
   String? pickedName;
   bool saving = false;
 
@@ -37,18 +37,48 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
   int? parseNum(String v) => int.tryParse(v.replaceAll(RegExp(r'[^\d]'), ''));
 
   Future<void> _pickImage() async {
-    final input = html.FileUploadInputElement()..accept = 'image/*';
+    final input = html.FileUploadInputElement()
+      ..accept = '.png,.jpg,.jpeg,image/png,image/jpeg';
     input.click();
     await input.onChange.first;
     final file = input.files?.first;
     if (file == null) return;
+
+    final lowerName = file.name.toLowerCase();
+    if (!lowerName.endsWith('.png') &&
+        !lowerName.endsWith('.jpg') &&
+        !lowerName.endsWith('.jpeg')) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Solo se permiten imágenes PNG o JPG'),
+            backgroundColor: T.danger,
+          ),
+        );
+      }
+      return;
+    }
+
     final reader = html.FileReader();
     reader.readAsArrayBuffer(file);
     await reader.onLoad.first;
-    setState(() {
-      pickedBytes = (reader.result as List).cast<int>();
-      pickedName = file.name;
-    });
+
+    final result = reader.result;
+    Uint8List? bytes;
+    if (result is Uint8List) {
+      bytes = result;
+    } else if (result is ByteBuffer) {
+      bytes = result.asUint8List();
+    } else if (result is List) {
+      bytes = Uint8List.fromList(result.cast<int>());
+    }
+
+    if (bytes != null && mounted) {
+      setState(() {
+        pickedBytes = bytes;
+        pickedName = file.name;
+      });
+    }
   }
 
   Future<void> _save() async {
@@ -71,7 +101,9 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
     setState(() => saving = true);
     try {
       String? imageUrl = existingImage;
-      if (pickedBytes != null) imageUrl = await Api.uploadImage(pickedBytes!, pickedName ?? 'producto.jpg');
+      if (pickedBytes != null) {
+        imageUrl = await Api.uploadImage(pickedBytes!, pickedName ?? 'producto.jpg');
+      }
       await Api.saveProduct(widget.product, {
         'name': nameCtrl.text.trim(),
         'category': catCtrl.text.trim(),
@@ -105,13 +137,13 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
               decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(14), border: Border.all(color: T.line)),
               clipBehavior: Clip.antiAlias,
               child: pickedBytes != null
-                  ? Image.memory(Uint8List.fromList(pickedBytes!), fit: BoxFit.contain)
+                  ? Image.memory(pickedBytes!, fit: BoxFit.contain)
                   : existingImage != null
                       ? ProductImage(image: existingImage, category: catCtrl.text.isEmpty ? 'General' : catCtrl.text)
                       : const Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                           Icon(Icons.add_photo_alternate_outlined, color: T.gold, size: 30),
                           SizedBox(height: 6),
-                          Text('Toca para agregar una foto', style: TextStyle(color: T.muted, fontSize: 12)),
+                          Text('Toca para agregar una foto (PNG o JPG)', style: TextStyle(color: T.muted, fontSize: 12)),
                         ]),
             ),
           ),
