@@ -26,6 +26,8 @@ app.use('/uploads', express.static(UPLOAD_DIR));
 if (fs.existsSync(WEB_DIR)) {
   app.use(express.static(WEB_DIR));
   app.get('*', (req, res) => res.sendFile(path.join(WEB_DIR, 'index.html')));
+} else {
+  console.log('NO SE ENCONTRO WEB_DIR EN:', WEB_DIR);
 }
 
 app.use((err, req, res, next) => {
