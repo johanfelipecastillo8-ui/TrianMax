@@ -20,13 +20,13 @@ function loadDB() {
       products: SEED_PRODUCTS,
       orders: [],
       tokens: [],
-      settings: { whatsapp: process.env.WHATSAPP_NUMBER || '573223201720' },
+      settings: { whatsapp: process.env.WHATSAPP_NUMBER || '573209080898' },
     };
   }
   try {
     return JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
   } catch {
-    return { products: [], orders: [], tokens: [], settings: { whatsapp: '573223201720' } };
+    return { products: [], orders: [], tokens: [], settings: { whatsapp: '573209080898' } };
   }
 }
 

@@ -29256,7 +29256,7 @@ var $async$Kz=A.K(function(a,b){if(a===1)return A.L(b,r)
 for(;;)switch(s){case 0:s=3
 return A.G(A.aEA(A.du("/api/settings"),null),$async$Kz)
 case 3:p=b
-if(p.b!==200){q="573223201720"
+if(p.b!==200){q="573209080898"
 s=1
 break}q=t.f.a(B.ay.k5(A.tl(A.tf(p.e)).ek(p.w),null)).i(0,"whatsapp")
 s=1
@@ -29430,7 +29430,7 @@ ph:function ph(a){this.a=a},
 Fx:function Fx(a,b){var _=this
 _.d=a
 _.e=b
-_.f="573223201720"
+_.f="573209080898"
 _.r="Todos"
 _.w=""
 _.x=!0

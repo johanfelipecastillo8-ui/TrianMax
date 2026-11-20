@@ -41,7 +41,7 @@ Esto levanta todo en **http://localhost:3000**:
 | ---------------- | --------------------------------------------- | --------------- |
 | `PORT`           | Puerto del servidor                           | `3000`          |
 | `ADMIN_PASSWORD` | Clave del panel del dueño                     | `trianmax2026`  |
-| `WHATSAPP_NUMBER`| Número inicial de WhatsApp (se edita en Ajustes) | `573223201720`   |
+| `WHATSAPP_NUMBER`| Número inicial de WhatsApp (se edita en Ajustes) | `573209080898`   |
 | `CLOUDINARY_CLOUD_NAME` | Cloud name de tu cuenta de Cloudinary | — |
 | `CLOUDINARY_API_KEY` | API key de Cloudinary | — |
 | `CLOUDINARY_API_SECRET` | API secret de Cloudinary (solo en el servidor) | — |
