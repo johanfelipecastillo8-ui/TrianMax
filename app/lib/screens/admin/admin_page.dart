@@ -1,3 +1,5 @@
+// Panel de administración solo para web: dart:html es necesario para localStorage.
+// ignore_for_file: deprecated_member_use, avoid_web_libraries_in_flutter
 import 'dart:html' as html;
 import 'package:material_ui/material_ui.dart';
 import '../../core/theme.dart';

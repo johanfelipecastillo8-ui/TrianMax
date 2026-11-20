@@ -30,11 +30,14 @@ class _AdminOrdersTabState extends State<AdminOrdersTab> {
   }
 
   Future<void> _setStatus(Order o, String status) async {
+    final scaffold = ScaffoldMessenger.of(context);
     try {
       await Api.setOrderStatus(o.id, status);
       _load();
     } on ApiException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString()), backgroundColor: T.danger));
+      if (mounted) {
+        scaffold.showSnackBar(SnackBar(content: Text(e.toString()), backgroundColor: T.danger));
+      }
     }
   }
 

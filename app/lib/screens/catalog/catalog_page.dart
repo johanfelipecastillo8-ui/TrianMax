@@ -1,3 +1,6 @@
+// Esta app se compila únicamente para web: dart:html es necesario para
+// localStorage y para abrir los enlaces de WhatsApp.
+// ignore_for_file: deprecated_member_use, avoid_web_libraries_in_flutter
 import 'dart:async';
 import 'dart:convert';
 import 'dart:html' as html;
@@ -143,6 +146,7 @@ class _CatalogPageState extends State<CatalogPage> {
 
   Future<void> checkout(Map<String, dynamic> form) async {
     final scaffold = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
     try {
       final order = await Api.createOrder({
         'name': form['name'],
@@ -156,7 +160,7 @@ class _CatalogPageState extends State<CatalogPage> {
       });
       clearCart();
       await _fetch();
-      Navigator.of(context).maybePop();
+      if (mounted) navigator.maybePop();
       scaffold.showSnackBar(SnackBar(content: Text('Pedido #${order.id} registrado. Abriendo WhatsApp…')));
       final msg = StringBuffer()
         ..writeln('*PEDIDO #${order.id} — TRIAN MAX*')
@@ -176,7 +180,7 @@ class _CatalogPageState extends State<CatalogPage> {
         ..writeln('Pago: ${order.payment}');
       if (order.note.isNotEmpty) msg.writeln('Nota: ${order.note}');
       final encoded = Uri.encodeComponent(msg.toString());
-      html.window.open('https://wa.me', '_blank');
+      html.window.open('https://wa.me/$whatsapp?text=$encoded', '_blank');
     } on ApiException catch (e) {
       await _fetch();
       scaffold.showSnackBar(SnackBar(content: Text(e.toString()), backgroundColor: T.danger));
@@ -185,7 +189,7 @@ class _CatalogPageState extends State<CatalogPage> {
 
   void askInfo() {
     final text = Uri.encodeComponent('Hola TRIAN MAX, quisiera más información sobre los productos del catálogo 2026.');
-    html.window.open('https://wa.me', '_blank');
+    html.window.open('https://wa.me/$whatsapp?text=$text', '_blank');
   }
 
   @override
