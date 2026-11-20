@@ -2,7 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import '../core/theme.dart';
 import '../core/utils.dart';
 import '../data/models/product.dart';
-import 'product_image.dart';
+import 'product_image_carousel.dart';
 
 class ProductSheet extends StatefulWidget {
   final Product product;
@@ -40,7 +40,10 @@ class _ProductSheetState extends State<ProductSheet> {
               child: SizedBox(
                 height: 320,
                 width: double.infinity,
-                child: Hero(tag: 'prod_${p.id}', child: ProductImage(image: p.image, category: p.category, iconSize: 110)),
+                child: Hero(
+                  tag: 'prod_${p.id}',
+                  child: ProductImageCarousel(images: p.images, category: p.category, iconSize: 110),
+                ),
               ),
             ),
             Positioned(

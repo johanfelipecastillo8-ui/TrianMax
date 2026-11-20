@@ -16,15 +16,18 @@ class ProductFormDialog extends StatefulWidget {
 }
 
 class _ProductFormDialogState extends State<ProductFormDialog> {
+  static const maxImages = 8;
+
   late final nameCtrl = TextEditingController(text: widget.product?.name ?? '');
   late final catCtrl = TextEditingController(text: widget.product?.category ?? '');
   late final priceCtrl = TextEditingController(text: widget.product == null ? '' : fmtPlain(widget.product!.price));
   late final oldPriceCtrl = TextEditingController(text: widget.product?.oldPrice == null ? '' : fmtPlain(widget.product!.oldPrice!));
   late final stockCtrl = TextEditingController(text: widget.product == null ? '' : '${widget.product!.stock}');
   late final descCtrl = TextEditingController(text: widget.product?.description ?? '');
-  String? existingImage;
-  Uint8List? pickedBytes;
-  String? pickedName;
+
+  final List<String> keptImages = [];
+  final List<Uint8List> newBytes = [];
+  final List<String> newNames = [];
   bool saving = false;
 
   static String fmtPlain(int n) => n.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (m) => '.');
@@ -32,43 +35,71 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
   @override
   void initState() {
     super.initState();
-    existingImage = widget.product?.image;
+    keptImages.addAll(widget.product?.images ?? []);
   }
 
   int? parseNum(String v) => int.tryParse(v.replaceAll(RegExp(r'[^\d]'), ''));
 
-  Future<void> _pickImage() async {
+  int get imageCount => keptImages.length + newBytes.length;
+
+  static bool _isImageName(String name) {
+    final lower = name.toLowerCase();
+    return lower.endsWith('.png') || lower.endsWith('.jpg') || lower.endsWith('.jpeg');
+  }
+
+  Future<void> _pickImages() async {
+    final scaffold = ScaffoldMessenger.of(context);
     final input = web.HTMLInputElement()
       ..type = 'file'
+      ..multiple = true
       ..accept = '.png,.jpg,.jpeg,image/png,image/jpeg';
     input.click();
     await input.onChange.first;
-    final file = input.files?.item(0);
-    if (file == null) return;
 
-    final lowerName = file.name.toLowerCase();
-    if (!lowerName.endsWith('.png') &&
-        !lowerName.endsWith('.jpg') &&
-        !lowerName.endsWith('.jpeg')) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Solo se permiten imágenes PNG o JPG'),
-            backgroundColor: T.danger,
-          ),
-        );
+    final files = input.files;
+    if (files == null) return;
+    final bytesList = <Uint8List>[];
+    final namesList = <String>[];
+    var invalid = 0;
+    for (var i = 0; i < files.length; i++) {
+      final file = files.item(i);
+      if (file == null) continue;
+      if (!_isImageName(file.name)) {
+        invalid++;
+        continue;
       }
-      return;
+      final buffer = await file.arrayBuffer().toDart;
+      bytesList.add(buffer.toDart.asUint8List());
+      namesList.add(file.name);
     }
 
-    final buffer = await file.arrayBuffer().toDart;
-    final bytes = buffer.toDart.asUint8List();
+    final room = maxImages - imageCount;
+    final accepted = bytesList.length < room ? bytesList.length : room;
     if (mounted) {
       setState(() {
-        pickedBytes = bytes;
-        pickedName = file.name;
+        for (var i = 0; i < accepted; i++) {
+          newBytes.add(bytesList[i]);
+          newNames.add(namesList[i]);
+        }
       });
     }
+    if (invalid > 0) {
+      scaffold.showSnackBar(const SnackBar(content: Text('Solo se permiten imágenes PNG o JPG'), backgroundColor: T.danger));
+    } else if (bytesList.length > room) {
+      scaffold.showSnackBar(const SnackBar(content: Text('Máximo $maxImages imágenes por producto'), backgroundColor: T.danger));
+    }
+  }
+
+  void _removeImage(int index) {
+    setState(() {
+      if (index < keptImages.length) {
+        keptImages.removeAt(index);
+      } else {
+        final i = index - keptImages.length;
+        newBytes.removeAt(i);
+        newNames.removeAt(i);
+      }
+    });
   }
 
   Future<void> _save() async {
@@ -90,10 +121,11 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
     }
     setState(() => saving = true);
     try {
-      String? imageUrl = existingImage;
-      if (pickedBytes != null) {
-        imageUrl = await Api.uploadImage(pickedBytes!, pickedName ?? 'producto.jpg');
+      final uploaded = <String>[];
+      for (var i = 0; i < newBytes.length; i++) {
+        uploaded.add(await Api.uploadImage(newBytes[i], newNames[i]));
       }
+      final images = [...keptImages, ...uploaded];
       await Api.saveProduct(widget.product, {
         'name': nameCtrl.text.trim(),
         'category': catCtrl.text.trim(),
@@ -101,7 +133,8 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
         'oldPrice': oldPriceCtrl.text.trim().isEmpty ? null : parseNum(oldPriceCtrl.text),
         'stock': stock,
         'description': descCtrl.text.trim(),
-        'image': imageUrl,
+        'images': images,
+        'image': images.isEmpty ? null : images.first,
       });
       if (mounted) Navigator.of(context).pop(true);
     } on ApiException catch (e) {
@@ -119,23 +152,30 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
         constraints: const BoxConstraints(maxWidth: 520),
         child: ListView(shrinkWrap: true, padding: const EdgeInsets.all(22), children: [
           Text(widget.product == null ? 'Nuevo producto' : 'Editar producto', style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w800)),
-          const SizedBox(height: 18),
-          GestureDetector(
-            onTap: _pickImage,
-            child: Container(
-              height: 130,
-              decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(14), border: Border.all(color: T.line)),
-              clipBehavior: Clip.antiAlias,
-              child: pickedBytes != null
-                  ? Image.memory(pickedBytes!, fit: BoxFit.contain)
-                  : existingImage != null
-                      ? ProductImage(image: existingImage, category: catCtrl.text.isEmpty ? 'General' : catCtrl.text)
-                      : const Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                          Icon(Icons.add_photo_alternate_outlined, color: T.gold, size: 30),
-                          SizedBox(height: 6),
-                          Text('Toca para agregar una foto (PNG o JPG)', style: TextStyle(color: T.muted, fontSize: 12)),
-                        ]),
-            ),
+          const SizedBox(height: 8),
+          const Text('Hasta 8 fotos por producto. Se muestran en el orden en que las agregas.', style: TextStyle(color: T.muted, fontSize: 12)),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              for (var i = 0; i < imageCount; i++) _imageTile(i),
+              if (imageCount < maxImages)
+                GestureDetector(
+                  onTap: saving ? null : _pickImages,
+                  child: Container(
+                    width: 84,
+                    height: 84,
+                    decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: T.line)),
+                    child: const Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      Icon(Icons.add_photo_alternate_outlined, color: T.gold, size: 24),
+                      SizedBox(height: 5),
+                      Text('Agregar', style: TextStyle(color: T.muted, fontSize: 10.5)),
+                    ]),
+                  ),
+                ),
+            ],
           ),
           const SizedBox(height: 14),
           _field(nameCtrl, 'Nombre del producto'),
@@ -176,6 +216,51 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
           ]),
         ]),
       ),
+    );
+  }
+
+  Widget _imageTile(int index) {
+    final isNew = index >= keptImages.length;
+    final Widget image;
+    if (isNew) {
+      image = Image.memory(newBytes[index - keptImages.length], fit: BoxFit.cover);
+    } else {
+      image = ProductImage(image: keptImages[index], category: catCtrl.text.isEmpty ? 'General' : catCtrl.text, iconSize: 28);
+    }
+    return Stack(
+      clipBehavior: Clip.antiAlias,
+      children: [
+        Container(
+          width: 84,
+          height: 84,
+          decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: T.line)),
+          clipBehavior: Clip.antiAlias,
+          child: image,
+        ),
+        Positioned(
+          top: 2,
+          right: 2,
+          child: GestureDetector(
+            onTap: saving ? null : () => _removeImage(index),
+            child: Container(
+              width: 22,
+              height: 22,
+              decoration: const BoxDecoration(color: Color(0xCC0A0A0D), shape: BoxShape.circle),
+              child: const Icon(Icons.close, size: 14, color: Colors.white),
+            ),
+          ),
+        ),
+        if (index == 0)
+          Positioned(
+            left: 4,
+            bottom: 4,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+              decoration: BoxDecoration(color: const Color(0xCC0A0A0D), borderRadius: BorderRadius.circular(6)),
+              child: const Text('Principal', style: TextStyle(color: T.goldLight, fontSize: 8.5, fontWeight: FontWeight.w700)),
+            ),
+          ),
+      ],
     );
   }
 

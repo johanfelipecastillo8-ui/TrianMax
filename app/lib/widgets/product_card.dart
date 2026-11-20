@@ -2,7 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import '../core/theme.dart';
 import '../core/utils.dart';
 import '../data/models/product.dart';
-import 'product_image.dart';
+import 'product_image_carousel.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -29,7 +29,10 @@ class ProductCard extends StatelessWidget {
           child: GestureDetector(
             onTap: onView,
             child: Stack(fit: StackFit.expand, children: [
-              Hero(tag: 'prod_${p.id}', child: ProductImage(image: p.image, category: p.category)),
+              Hero(
+                tag: 'prod_${p.id}',
+                child: ProductImageCarousel(images: p.images, category: p.category, iconSize: 46),
+              ),
               if (p.discount != null)
                 Positioned(
                   top: 10, left: 10,

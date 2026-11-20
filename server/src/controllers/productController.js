@@ -10,7 +10,7 @@ const ProductController = {
   create(req, res) {
     const { errors, value } = ProductModel.validate(req.body || {});
     if (errors.length) return res.status(400).json({ errors });
-    const product = ProductModel.create(value, req.body.image);
+    const product = ProductModel.create(value);
     res.status(201).json(product);
   },
 
@@ -18,7 +18,7 @@ const ProductController = {
     const id = Number(req.params.id);
     const { errors, value } = ProductModel.validate(req.body || {});
     if (errors.length) return res.status(400).json({ errors });
-    const product = ProductModel.update(id, value, req.body.image);
+    const product = ProductModel.update(id, value);
     if (!product) return res.status(404).json({ error: 'Producto no encontrado' });
     res.json(product);
   },

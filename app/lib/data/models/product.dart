@@ -6,7 +6,7 @@ class Product {
   final int? oldPrice;
   final int stock;
   final String description;
-  final String? image;
+  final List<String> images;
 
   const Product({
     required this.id,
@@ -16,19 +16,31 @@ class Product {
     this.oldPrice,
     required this.stock,
     required this.description,
-    this.image,
+    required this.images,
   });
 
-  factory Product.fromJson(Map<String, dynamic> j) => Product(
-        id: j['id'] as int,
-        name: j['name'] as String,
-        category: j['category'] as String,
-        price: j['price'] as int,
-        oldPrice: j['oldPrice'] as int?,
-        stock: j['stock'] as int,
-        description: (j['description'] as String?) ?? '',
-        image: j['image'] as String?,
-      );
+  /// Primera imagen, mantenida por compatibilidad con productos antiguos.
+  String? get image => images.isEmpty ? null : images.first;
+
+  factory Product.fromJson(Map<String, dynamic> j) {
+    final raw = j['images'];
+    var images = raw is List
+        ? raw.whereType<String>().where((s) => s.trim().isNotEmpty).map((s) => s.trim()).toList()
+        : <String>[];
+    if (images.isEmpty && j['image'] is String && (j['image'] as String).isNotEmpty) {
+      images = [j['image'] as String];
+    }
+    return Product(
+      id: j['id'] as int,
+      name: j['name'] as String,
+      category: j['category'] as String,
+      price: j['price'] as int,
+      oldPrice: j['oldPrice'] as int?,
+      stock: j['stock'] as int,
+      description: (j['description'] as String?) ?? '',
+      images: images.toSet().toList(),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         'name': name,
@@ -37,7 +49,8 @@ class Product {
         'oldPrice': oldPrice,
         'stock': stock,
         'description': description,
-        if (image != null) 'image': image,
+        'images': images,
+        'image': image,
       };
 
   int? get discount =>

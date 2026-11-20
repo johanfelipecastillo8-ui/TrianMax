@@ -27,6 +27,17 @@ class ProductModel {
     if (oldPrice !== null && (!Number.isFinite(oldPrice) || oldPrice < 0)) errors.push('Precio anterior inválido');
     if (!Number.isInteger(stock) || stock < 0) errors.push('Stock inválido');
 
+    const rawImages = body.images;
+    const legacyImage = typeof body.image === 'string' ? body.image : null;
+    let images = Array.isArray(rawImages)
+      ? rawImages.filter(url => typeof url === 'string').map(url => url.trim()).filter(Boolean)
+      : (legacyImage ? [legacyImage.trim()] : []);
+    images = [...new Set(images)].filter(url => url.startsWith('/uploads/') || /^https?:\/\//i.test(url));
+    if (images.length > 8) {
+      errors.push('Máximo 8 imágenes por producto');
+      images = images.slice(0, 8);
+    }
+
     return {
       errors,
       value: {
@@ -36,23 +47,34 @@ class ProductModel {
         oldPrice: oldPrice === null ? null : Math.round(oldPrice),
         stock,
         description,
+        images,
+        image: images[0] || null,
       },
     };
   }
 
-  static create(data, image) {
+  static create(data) {
     const id = db.products.reduce((m, p) => Math.max(m, p.id), 0) + 1;
-    const product = { id, ...data, image: image || null, createdAt: new Date().toISOString() };
+    const images = Array.isArray(data.images) ? data.images : [];
+    const product = {
+      id,
+      ...data,
+      images,
+      image: images[0] || null,
+      createdAt: new Date().toISOString(),
+    };
     db.products.push(product);
     saveDB();
     return product;
   }
 
-  static update(id, data, image) {
+  static update(id, data) {
     const product = ProductModel.find(id);
     if (!product) return null;
-    Object.assign(product, data);
-    if (image !== undefined) product.image = image;
+    const images = Array.isArray(data.images)
+      ? data.images
+      : (Array.isArray(product.images) ? product.images : (product.image ? [product.image] : []));
+    Object.assign(product, data, { images, image: images[0] || null });
     saveDB();
     return product;
   }
