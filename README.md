@@ -6,7 +6,7 @@ Catálogo web con carrito y pedidos por WhatsApp, panel de administración y bac
 
 - **App (cliente + panel):** Flutter Web (Dart) → `app/`
 - **Backend:** Node.js + Express → `server/`
-- **Datos:** `server/data/db.json` (productos, pedidos, ajustes) e imágenes en `server/uploads/`
+- **Datos:** `server/data/db.json` (productos, pedidos, ajustes) e imágenes en **Cloudinary** (`server/uploads/` queda solo como legacy para productos antiguos)
 
 ## Puesta en marcha
 
@@ -42,6 +42,12 @@ Esto levanta todo en **http://localhost:3000**:
 | `PORT`           | Puerto del servidor                           | `3000`          |
 | `ADMIN_PASSWORD` | Clave del panel del dueño                     | `trianmax2026`  |
 | `WHATSAPP_NUMBER`| Número inicial de WhatsApp (se edita en Ajustes) | `573223201720`   |
+| `CLOUDINARY_CLOUD_NAME` | Cloud name de tu cuenta de Cloudinary | — |
+| `CLOUDINARY_API_KEY` | API key de Cloudinary | — |
+| `CLOUDINARY_API_SECRET` | API secret de Cloudinary (solo en el servidor) | — |
+| `CLOUDINARY_FOLDER` | Carpeta donde se guardan las fotos | `trianmax` |
+
+Las tres variables de Cloudinary son obligatorias para subir imágenes desde el panel. Configúralas en el entorno donde corra el servidor (nunca en la app Flutter). Las fotos nuevas se guardan en `https://res.cloudinary.com/<cloud_name>/image/upload/...` y esa URL se guarda en cada producto.
 
 ## Desarrollo de la app Flutter
 

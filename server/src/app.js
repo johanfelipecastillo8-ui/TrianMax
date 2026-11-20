@@ -21,6 +21,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api', apiRoutes);
+// Solo para productos antiguos que aún apuntan a imágenes locales.
 app.use('/uploads', express.static(UPLOAD_DIR));
 
 if (fs.existsSync(WEB_DIR)) {
