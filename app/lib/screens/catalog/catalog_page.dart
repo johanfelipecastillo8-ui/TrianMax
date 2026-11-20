@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:html' as html;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import '../../core/theme.dart';
 import '../../core/utils.dart';
 import '../../data/models/cart_item.dart';
@@ -39,9 +39,21 @@ class _CatalogPageState extends State<CatalogPage> {
     try {
       final data = await Api.getProducts();
       final wa = await Api.getWhatsApp();
-      if (mounted) setState(() { products = data; whatsapp = wa; loading = false; error = null; });
+      if (mounted) {
+        setState(() {
+          products = data;
+          whatsapp = wa;
+          loading = false;
+          error = null;
+        });
+      }
     } catch (e) {
-      if (mounted) setState(() { loading = false; error = 'No se pudo conectar con el servidor'; });
+      if (mounted) {
+        setState(() {
+          loading = false;
+          error = 'No se pudo conectar con el servidor';
+        });
+      }
     }
   }
 
@@ -49,7 +61,8 @@ class _CatalogPageState extends State<CatalogPage> {
     try {
       final raw = html.window.localStorage['tm_cart'];
       if (raw != null && raw.isNotEmpty) {
-        cart = (jsonDecode(raw) as Map<String, dynamic>).entries
+        cart = (jsonDecode(raw) as Map<String, dynamic>)
+            .entries
             .map((e) => CartItem(id: int.parse(e.key), qty: (e.value as num).toInt()))
             .toList();
       }
@@ -61,7 +74,9 @@ class _CatalogPageState extends State<CatalogPage> {
   }
 
   Product? _product(int id) {
-    for (final p in products) { if (p.id == id) return p; }
+    for (final p in products) {
+      if (p.id == id) return p;
+    }
     return null;
   }
 
@@ -77,7 +92,11 @@ class _CatalogPageState extends State<CatalogPage> {
       return;
     }
     setState(() {
-      if (item != null) { item.qty += qty; } else { cart.add(CartItem(id: id, qty: qty)); }
+      if (item != null) {
+        item.qty += qty;
+      } else {
+        cart.add(CartItem(id: id, qty: qty));
+      }
     });
     _saveCart();
     _toast('${p.name} agregado al carrito');
@@ -131,7 +150,9 @@ class _CatalogPageState extends State<CatalogPage> {
         'payment': form['payment'],
         'shipMethod': form['shipMethod'],
         'note': form['note'],
-        'items': [for (var i in cart) {'id': i.id, 'qty': i.qty}],
+        'items': [
+          for (var i in cart) {'id': i.id, 'qty': i.qty}
+        ],
       });
       clearCart();
       await _fetch();
@@ -154,7 +175,8 @@ class _CatalogPageState extends State<CatalogPage> {
         ..writeln('Entrega: ${shipLabels[order.shipMethod]}')
         ..writeln('Pago: ${order.payment}');
       if (order.note.isNotEmpty) msg.writeln('Nota: ${order.note}');
-      html.window.open('https://wa.me{Uri.encodeComponent(msg.toString())}', '_blank');
+      final encoded = Uri.encodeComponent(msg.toString());
+      html.window.open('https://wa.me', '_blank');
     } on ApiException catch (e) {
       await _fetch();
       scaffold.showSnackBar(SnackBar(content: Text(e.toString()), backgroundColor: T.danger));
@@ -162,19 +184,19 @@ class _CatalogPageState extends State<CatalogPage> {
   }
 
   void askInfo() {
-    html.window.open(
-      'https://wa.me/?text=${Uri.encodeComponent('Hola TRIAN MAX, quisiera más información sobre los productos del catálogo 2026.')}',
-      '_blank',
-    );
+    final text = Uri.encodeComponent('Hola TRIAN MAX, quisiera más información sobre los productos del catálogo 2026.');
+    html.window.open('https://wa.me', '_blank');
   }
 
   @override
   Widget build(BuildContext context) {
     final cats = ['Todos', ...products.map((p) => p.category).toSet()];
-    final featured = products.where((p) => p.image != null && p.image!.isNotEmpty).take(6).toList();
-    final filtered = products.where((p) =>
-        (activeCat == 'Todos' || p.category == activeCat) &&
-        '${p.name} ${p.category} ${p.description}'.toLowerCase().contains(query)).toList();
+    final featured = products.take(6).toList();
+    final filtered = products
+        .where((p) =>
+            (activeCat == 'Todos' || p.category == activeCat) &&
+            '${p.name} ${p.category} ${p.description}'.toLowerCase().contains(query))
+        .toList();
 
     return Scaffold(
       endDrawer: CartDrawer(
@@ -201,31 +223,33 @@ class _CatalogPageState extends State<CatalogPage> {
           ),
         ]),
         actions: [
-          Builder(builder: (c) => Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: MaterialButton(
-              minWidth: 0,
-              padding: EdgeInsets.zero,
-              onPressed: () => Scaffold.of(c).openEndDrawer(),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-                decoration: BoxDecoration(gradient: T.goldGradient, borderRadius: BorderRadius.circular(99)),
-                child: Row(children: [
-                  const Icon(Icons.shopping_cart_outlined, size: 17, color: Color(0xFF151005)),
-                  const SizedBox(width: 7),
-                  const Text('Carrito', style: TextStyle(color: Color(0xFF151005), fontWeight: FontWeight.w800, fontSize: 13)),
-                  if (cartCount > 0) ...[
+          Builder(
+            builder: (c) => Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: MaterialButton(
+                minWidth: 0,
+                padding: EdgeInsets.zero,
+                onPressed: () => Scaffold.of(c).openEndDrawer(),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                  decoration: BoxDecoration(gradient: T.goldGradient, borderRadius: BorderRadius.circular(99)),
+                  child: Row(children: [
+                    const Icon(Icons.shopping_cart_outlined, size: 17, color: Color(0xFF151005)),
                     const SizedBox(width: 7),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      decoration: BoxDecoration(color: const Color(0xFF151005), borderRadius: BorderRadius.circular(99)),
-                      child: Text('$cartCount', style: const TextStyle(color: T.goldLight, fontWeight: FontWeight.w800, fontSize: 11)),
-                    ),
-                  ],
-                ]),
+                    const Text('Carrito', style: TextStyle(color: Color(0xFF151005), fontWeight: FontWeight.w800, fontSize: 13)),
+                    if (cartCount > 0) ...[
+                      const SizedBox(width: 7),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        decoration: BoxDecoration(color: const Color(0xFF151005), borderRadius: BorderRadius.circular(99)),
+                        child: Text('$cartCount', style: const TextStyle(color: T.goldLight, fontWeight: FontWeight.w800, fontSize: 11)),
+                      ),
+                    ],
+                  ]),
+                ),
               ),
             ),
-          )),
+          ),
         ],
       ),
       body: loading
@@ -261,7 +285,11 @@ class _CatalogPageState extends State<CatalogPage> {
                                 crossAxisSpacing: 16,
                               ),
                               delegate: SliverChildBuilderDelegate(
-                                (c, i) => ProductCard(product: filtered[i], onView: () => openProduct(filtered[i]), onAdd: () => addToCart(filtered[i].id, 1)),
+(c, i) => ProductCard(
+product: filtered[i],
+onView: () => openProduct(filtered[i]),
+onAdd: () => addToCart(filtered[i].id, 1),
+),
 childCount: filtered.length,
 ),
 ),
