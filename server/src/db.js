@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const { DATA_DIR, DB_FILE } = require('./config');
+const { saveJson, loadJson } = require('./cloudinary');
 
 for (const dir of [DATA_DIR]) fs.mkdirSync(dir, { recursive: true });
 
@@ -39,12 +40,44 @@ for (const product of db.products || []) {
   }
 }
 
+let remoteReady = false;
+
 function saveDB() {
   const tmp = DB_FILE + '.tmp';
   fs.writeFileSync(tmp, JSON.stringify(db, null, 2));
   fs.renameSync(tmp, DB_FILE);
+  if (remoteReady) {
+    saveJson(db).catch(e => console.error('Error al guardar la DB en Cloudinary:', e.message));
+  }
 }
 
-saveDB();
+// Render reinicia la instancia y pierde el sistema de archivos: la copia en
+// Cloudinary es la fuente de verdad al arrancar.
+async function initDB() {
+  try {
+    const remote = await loadJson();
+    if (remote) {
+      db.products = remote.products;
+      db.orders = remote.orders || [];
+      db.tokens = remote.tokens || [];
+      db.settings = remote.settings || { whatsapp: '573209080898' };
+      for (const product of db.products) {
+        if (!Array.isArray(product.images)) {
+          product.images = product.image ? [product.image] : [];
+        }
+      }
+      fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
+      console.log('DB restaurada desde Cloudinary');
+    } else {
+      fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
+      console.log('Sin DB remota: se usa la base local/inicial');
+    }
+    remoteReady = true;
+    await saveJson(db);
+  } catch (e) {
+    console.error('No se pudo sincronizar la DB con Cloudinary:', e.message);
+    remoteReady = true;
+  }
+}
 
-module.exports = { db, saveDB };
+module.exports = { db, saveDB, initDB };

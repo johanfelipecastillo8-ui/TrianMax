@@ -62,4 +62,34 @@ async function uploadImage(buffer) {
   return result.secure_url;
 }
 
-module.exports = { uploadImage, configured };
+/* ---------- Persistencia de la base de datos ---------- */
+
+const DB_PUBLIC_ID = 'trianmax_db.json';
+
+async function saveJson(data) {
+  if (!configured) return;
+  const params = cloudinary.utils.sign_request({
+    timestamp: Math.floor(Date.now() / 1000),
+    public_id: DB_PUBLIC_ID,
+    overwrite: true,
+  });
+  const form = new FormData();
+  for (const [key, value] of Object.entries(params)) form.append(key, String(value));
+  form.append('file', new Blob([JSON.stringify(data)], { type: 'application/json' }), 'db.json');
+
+  const endpoint = `https://api.cloudinary.com/v1_1/${encodeURIComponent(CLOUDINARY_CLOUD_NAME)}/raw/upload`;
+  const response = await fetch(endpoint, { method: 'POST', body: form });
+  if (!response.ok) throw new Error((await response.text()).slice(0, 200) || `Cloudinary ${response.status}`);
+}
+
+async function loadJson() {
+  if (!configured) return null;
+  const url = `https://res.cloudinary.com/${encodeURIComponent(CLOUDINARY_CLOUD_NAME)}/raw/upload/${DB_PUBLIC_ID}?t=${Date.now()}`;
+  const response = await fetch(url);
+  if (!response.ok) return null;
+  const data = JSON.parse(await response.text());
+  if (!Array.isArray(data.products) || !Array.isArray(data.orders)) return null;
+  return data;
+}
+
+module.exports = { uploadImage, saveJson, loadJson, configured };

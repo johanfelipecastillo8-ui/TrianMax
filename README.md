@@ -49,6 +49,8 @@ Esto levanta todo en **http://localhost:3000**:
 
 Las tres variables de Cloudinary son obligatorias para subir imágenes desde el panel. Configúralas en el entorno donde corra el servidor (nunca en la app Flutter). Las fotos nuevas se guardan en `https://res.cloudinary.com/<cloud_name>/image/upload/...` y esa URL se guarda en cada producto.
 
+Además, la base de datos (`productos`, pedidos, ajustes y tokens) se respalda en Cloudinary como `trianmax_db.json` y se restaura al arrancar. Esto evita perder los cambios cuando Render reinicia la instancia (su sistema de archivos es temporal). Si no hay credenciales de Cloudinary, se usa solo `server/data/db.json`.
+
 ## Desarrollo de la app Flutter
 
 ```bash
