@@ -30,7 +30,10 @@ const UploadController = {
       } catch (error) {
         console.error('Error al subir la imagen a Cloudinary:', error);
         const status = error.code === 'CLOUDINARY_NOT_CONFIGURED' ? 500 : 502;
-        res.status(status).json({ error: 'No se pudo subir la imagen a Cloudinary' });
+        res.status(status).json({
+          error: 'No se pudo subir la imagen a Cloudinary',
+          detail: error.message ? String(error.message).slice(0, 200) : undefined,
+        });
       }
     });
   },
