@@ -24,8 +24,10 @@ Esto levanta todo en **http://localhost:3000**:
 >
 > ```bash
 > cd app
-> flutter build web --release
+> flutter build web --release --wasm
 > ```
+>
+> El flag `--wasm` genera WebAssembly (cuando el navegador lo soporta) y mantiene una versión JavaScript de respaldo.
 
 ## Panel del dueño
 

@@ -1,9 +1,6 @@
-// Esta app se compila únicamente para web: dart:html es necesario para
-// localStorage y para abrir los enlaces de WhatsApp.
-// ignore_for_file: deprecated_member_use, avoid_web_libraries_in_flutter
 import 'dart:async';
 import 'dart:convert';
-import 'dart:html' as html;
+import 'package:web/web.dart' as web;
 import 'package:material_ui/material_ui.dart';
 import '../../core/theme.dart';
 import '../../core/utils.dart';
@@ -62,7 +59,7 @@ class _CatalogPageState extends State<CatalogPage> {
 
   void _loadCart() {
     try {
-      final raw = html.window.localStorage['tm_cart'];
+      final raw = web.window.localStorage.getItem('tm_cart');
       if (raw != null && raw.isNotEmpty) {
         cart = (jsonDecode(raw) as Map<String, dynamic>)
             .entries
@@ -73,7 +70,7 @@ class _CatalogPageState extends State<CatalogPage> {
   }
 
   void _saveCart() {
-    html.window.localStorage['tm_cart'] = jsonEncode({for (var i in cart) '${i.id}': i.qty});
+    web.window.localStorage.setItem('tm_cart', jsonEncode({for (var i in cart) '${i.id}': i.qty}));
   }
 
   Product? _product(int id) {
@@ -180,7 +177,7 @@ class _CatalogPageState extends State<CatalogPage> {
         ..writeln('Pago: ${order.payment}');
       if (order.note.isNotEmpty) msg.writeln('Nota: ${order.note}');
       final encoded = Uri.encodeComponent(msg.toString());
-      html.window.open('https://wa.me/$whatsapp?text=$encoded', '_blank');
+      web.window.open('https://wa.me/$whatsapp?text=$encoded', '_blank');
     } on ApiException catch (e) {
       await _fetch();
       scaffold.showSnackBar(SnackBar(content: Text(e.toString()), backgroundColor: T.danger));
@@ -189,7 +186,7 @@ class _CatalogPageState extends State<CatalogPage> {
 
   void askInfo() {
     final text = Uri.encodeComponent('Hola TRIAN MAX, quisiera más información sobre los productos del catálogo 2026.');
-    html.window.open('https://wa.me/$whatsapp?text=$text', '_blank');
+    web.window.open('https://wa.me/$whatsapp?text=$text', '_blank');
   }
 
   @override

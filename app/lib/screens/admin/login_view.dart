@@ -1,6 +1,4 @@
-// Panel de administración solo para web: dart:html es necesario para localStorage.
-// ignore_for_file: deprecated_member_use, avoid_web_libraries_in_flutter
-import 'dart:html' as html;
+import 'package:web/web.dart' as web;
 import 'package:material_ui/material_ui.dart';
 import '../../core/theme.dart';
 import '../../data/services/api_service.dart';
@@ -22,7 +20,7 @@ class _AdminLoginState extends State<AdminLogin> {
     try {
       final token = await Api.login(ctrl.text.trim());
       Api.token = token;
-      html.window.localStorage['tm_token'] = token;
+      web.window.localStorage.setItem('tm_token', token);
       widget.onSuccess();
     } on ApiException catch (e) {
       setState(() => error = e.toString());

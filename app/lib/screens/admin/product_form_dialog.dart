@@ -1,8 +1,7 @@
-// Panel de administración solo para web: dart:html es necesario para seleccionar imágenes.
-// ignore_for_file: deprecated_member_use, avoid_web_libraries_in_flutter
-import 'dart:html' as html;
+import 'dart:js_interop';
 import 'dart:typed_data';
 import 'package:material_ui/material_ui.dart';
+import 'package:web/web.dart' as web;
 import '../../core/theme.dart';
 import '../../data/models/product.dart';
 import '../../data/services/api_service.dart';
@@ -39,11 +38,12 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
   int? parseNum(String v) => int.tryParse(v.replaceAll(RegExp(r'[^\d]'), ''));
 
   Future<void> _pickImage() async {
-    final input = html.FileUploadInputElement()
+    final input = web.HTMLInputElement()
+      ..type = 'file'
       ..accept = '.png,.jpg,.jpeg,image/png,image/jpeg';
     input.click();
     await input.onChange.first;
-    final file = input.files?.first;
+    final file = input.files?.item(0);
     if (file == null) return;
 
     final lowerName = file.name.toLowerCase();
@@ -61,21 +61,9 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
       return;
     }
 
-    final reader = html.FileReader();
-    reader.readAsArrayBuffer(file);
-    await reader.onLoad.first;
-
-    final result = reader.result;
-    Uint8List? bytes;
-    if (result is Uint8List) {
-      bytes = result;
-    } else if (result is ByteBuffer) {
-      bytes = result.asUint8List();
-    } else if (result is List) {
-      bytes = Uint8List.fromList(result.cast<int>());
-    }
-
-    if (bytes != null && mounted) {
+    final buffer = await file.arrayBuffer().toDart;
+    final bytes = buffer.toDart.asUint8List();
+    if (mounted) {
       setState(() {
         pickedBytes = bytes;
         pickedName = file.name;
