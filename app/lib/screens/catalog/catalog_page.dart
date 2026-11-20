@@ -316,16 +316,6 @@ child: Text('TRIAN MAX', style: T.serif.copyWith(fontSize: 56, fontWeight: FontW
 ),
 const SizedBox(height: 10),
 Text('Todo lo que buscas, en un solo lugar', style: T.serif.copyWith(fontStyle: FontStyle.italic, color: T.muted, fontSize: 15)),
-const SizedBox(height: 18),
-Container(
-padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-decoration: BoxDecoration(border: Border.all(color: T.line), borderRadius: BorderRadius.circular(99), color: const Color(0x10D4AF37)),
-child: const Row(mainAxisSize: MainAxisSize.min, children: [
-Icon(Icons.link_rounded, size: 13, color: T.goldLight),
-SizedBox(width: 6),
-Text('catalogo.org.pe/trian-max', style: TextStyle(color: T.goldLight, fontSize: 12)),
-]),
-),
 const SizedBox(height: 22),
 Container(width: 70, height: 2, decoration: BoxDecoration(gradient: T.goldGradient, borderRadius: BorderRadius.circular(2))),
 ]),
