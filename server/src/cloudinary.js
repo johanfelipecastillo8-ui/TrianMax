@@ -66,14 +66,27 @@ async function uploadImage(buffer) {
 
 const DB_PUBLIC_ID = 'trianmax_db.json';
 
+function deliveryUrl(version) {
+  const base = `https://res.cloudinary.com/${encodeURIComponent(CLOUDINARY_CLOUD_NAME)}/raw/upload`;
+  return version ? `${base}/v${version}/${DB_PUBLIC_ID}` : `${base}/${DB_PUBLIC_ID}?v=${Date.now()}`;
+}
+
+// La URL sin versión puede servir una copia vieja desde la CDN de Cloudinary.
+// Consultamos la versión real del recurso para leer siempre el último JSON.
+async function latestDeliveryUrl() {
+  const resource = await cloudinary.api.resource(DB_PUBLIC_ID, { resource_type: 'raw', type: 'upload' });
+  return resource.secure_url || deliveryUrl(resource.version);
+}
+
 async function saveJson(data) {
   if (!configured) return;
   const params = cloudinary.utils.sign_request({
     timestamp: Math.floor(Date.now() / 1000),
     public_id: DB_PUBLIC_ID,
     overwrite: true,
-    // Invalida la copia en CDN para que un reinicio no restaure datos viejos.
     invalidate: true,
+    // Versión única aunque dos cambios ocurran en el mismo segundo.
+    version: Date.now(),
   });
   const form = new FormData();
   for (const [key, value] of Object.entries(params)) form.append(key, String(value));
@@ -86,12 +99,23 @@ async function saveJson(data) {
 
 async function loadJson() {
   if (!configured) return null;
-  const url = `https://res.cloudinary.com/${encodeURIComponent(CLOUDINARY_CLOUD_NAME)}/raw/upload/${DB_PUBLIC_ID}?v=${Date.now()}`;
-  const response = await fetch(url);
-  if (!response.ok) return null;
-  const data = JSON.parse(await response.text());
-  if (!Array.isArray(data.products) || !Array.isArray(data.orders)) return null;
-  return data;
+  const urls = [];
+  try {
+    urls.push(await latestDeliveryUrl());
+  } catch (e) {
+    console.warn('No se pudo consultar la versión de la DB en Cloudinary:', e.message || e);
+  }
+  urls.push(deliveryUrl());
+
+  for (const url of urls) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) continue;
+      const data = JSON.parse(await response.text());
+      if (Array.isArray(data.products) && Array.isArray(data.orders)) return data;
+    } catch (_) {}
+  }
+  return null;
 }
 
 module.exports = { uploadImage, saveJson, loadJson, configured };
