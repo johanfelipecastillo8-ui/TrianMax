@@ -1,43 +1,51 @@
 import 'package:material_ui/material_ui.dart';
 
 class T {
-  // Paleta pastel elegante: crema cálido, lavanda suave, rosa empolvado y menta salvia.
-  static const bg = Color(0xFFFBF8F4);
+  // Paleta sobria con beige como color principal: arena, taupe, grafito y oliva.
+  static const bg = Color(0xFFF5F0E8);
   static const surface = Color(0xFFFFFFFF);
-  static const surface2 = Color(0xFFF4EDE8);
-  static const ink = Color(0xFF2E2A38);
+  static const surface2 = Color(0xFFF0E7DA);
+  static const ink = Color(0xFF2E2A26);
   static const text = ink;
-  static const muted = Color(0xFF6F6A78);
+  static const muted = Color(0xFF6E655A);
   static const onAccent = ink;
 
-  static const lavender = Color(0xFFD9CDEA);
-  static const lavenderDeep = Color(0xFF6F5B96);
-  static const plum = Color(0xFF5C4A80);
-  static const blush = Color(0xFFF3D6DE);
-  static const blushDeep = Color(0xFFA66B80);
-  static const peach = Color(0xFFF6DECB);
-  static const peachDeep = Color(0xFFB87A56);
-  static const mint = Color(0xFFD6EADB);
-  static const mintDeep = Color(0xFF4F8068);
-  static const sky = Color(0xFFD7E6F0);
-  static const skyDeep = Color(0xFF5C7F9E);
-  static const butter = Color(0xFFF4E4BC);
-
-  // Lavados suaves para fondos, badges y estados.
-  static const lavenderWash = Color(0x33D9CDEA);
-  static const blushWash = Color(0x33F3D6DE);
-  static const peachWash = Color(0x33F6DECB);
-  static const mintWash = Color(0x33D6EADB);
+  // Beige principal y sus variaciones.
+  static const beige = Color(0xFFD8C4A8);
+  static const beigeDeep = Color(0xFFA88764);
+  static const beigeInk = Color(0xFF6E563D);
+  static const taupe = Color(0xFF8A735C);
+  static const slate = Color(0xFF5A6470);
+  static const olive = Color(0xFF5F7A63);
+  static const ochre = Color(0xFFA9784F);
 
   // Nombres anteriores conservados para no romper el resto de la app.
-  static const gold = lavenderDeep;
-  static const goldLight = lavenderDeep;
-  static const goldDark = plum;
-  static const green = mintDeep;
-  static const danger = Color(0xFFD98A98);
-  static const dangerDeep = Color(0xFFB85C70);
-  static const line = Color(0x406F5B96);
-  static const softLine = Color(0x2E2E2A38);
+  static const lavender = Color(0xFFE3D6C4);
+  static const lavenderDeep = beigeDeep;
+  static const blush = Color(0xFFE6D5C6);
+  static const blushDeep = Color(0xFFA07F66);
+  static const peach = Color(0xFFEAD8C0);
+  static const peachDeep = ochre;
+  static const mint = Color(0xFFD8E0D2);
+  static const mintDeep = olive;
+  static const sky = Color(0xFFDCE0E4);
+  static const skyDeep = slate;
+  static const butter = Color(0xFFEAD9B8);
+
+  // Lavados suaves para fondos, badges y estados.
+  static const lavenderWash = Color(0x33E3D6C4);
+  static const blushWash = Color(0x33E6D5C6);
+  static const peachWash = Color(0x33EAD8C0);
+  static const mintWash = Color(0x33D8E0D2);
+
+  static const gold = beigeDeep;
+  static const goldLight = beigeInk;
+  static const goldDark = Color(0xFF7A5F43);
+  static const green = olive;
+  static const danger = Color(0xFFBD6F66);
+  static const dangerDeep = Color(0xFF9C4F47);
+  static const line = Color(0x403A332B);
+  static const softLine = Color(0x262E2A26);
 
   // Gradiente profundo para logotipos sobre fondos claros.
   static const goldGradient = LinearGradient(
@@ -46,7 +54,7 @@ class T {
     colors: [blushDeep, lavenderDeep, peachDeep],
   );
 
-  // Gradiente suave para botones, badges y fondos.
+  // Gradiente beige suave para botones, badges y fondos.
   static const softGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -54,16 +62,16 @@ class T {
   );
 
   static const mintGradient = LinearGradient(
-    colors: [mint, Color(0xFFC3DFCB)],
+    colors: [mint, Color(0xFFC7D2C0)],
   );
 
   static ThemeData get theme => ThemeData(
         useMaterial3: true,
         scaffoldBackgroundColor: bg,
         colorScheme: const ColorScheme.light(
-          primary: lavenderDeep,
+          primary: beigeDeep,
           onPrimary: onAccent,
-          secondary: blush,
+          secondary: beige,
           onSecondary: onAccent,
           surface: surface,
           onSurface: text,
@@ -87,7 +95,7 @@ class T {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: lavenderDeep, width: 1.4),
+            borderSide: const BorderSide(color: beigeDeep, width: 1.4),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),

@@ -41,7 +41,7 @@ class ProductImage extends StatelessWidget {
         gradient: RadialGradient(
           center: Alignment(0, -0.4),
           radius: 1.1,
-          colors: [Color(0xFFF3ECE4), T.bg],
+          colors: [Color(0xFFF0E8DC), T.bg],
         ),
       ),
       child: Center(

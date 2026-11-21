@@ -115,9 +115,9 @@ class _ProductImageCarouselState extends State<ProductImageCarousel> {
                       width: active ? 14 : 6,
                       height: 6,
                       decoration: BoxDecoration(
-                        color: active ? T.lavenderDeep : const Color(0x99E8C9D3),
+                        color: active ? T.lavenderDeep : const Color(0x99E3D6C4),
                         borderRadius: BorderRadius.circular(99),
-                        boxShadow: const [BoxShadow(color: Color(0x33443A55), blurRadius: 3)],
+                        boxShadow: const [BoxShadow(color: Color(0x33443A32), blurRadius: 3)],
                       ),
                     );
                   }),
@@ -139,7 +139,7 @@ class _ProductImageCarouselState extends State<ProductImageCarousel> {
           width: 28,
           height: 28,
           decoration: BoxDecoration(
-            color: const Color(0xE6F7F2EC),
+            color: const Color(0xF2F5F0E8),
             shape: BoxShape.circle,
             border: Border.all(color: T.line),
           ),
