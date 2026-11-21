@@ -5,6 +5,8 @@ const path = require('path');
 module.exports = {
   PORT: process.env.PORT || 3000,
   ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || 'trianmax2026',
+  // El número se edita en el panel (Ajustes) y se guarda en la DB persistida.
+  WHATSAPP_NUMBER: '573209080898',
   DATA_DIR: path.join(__dirname, '..', 'data'),
   DB_FILE: path.join(__dirname, '..', 'data', 'db.json'),
   UPLOAD_DIR: path.join(__dirname, '..', 'uploads'),

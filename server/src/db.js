@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require('fs');
-const { DATA_DIR, DB_FILE } = require('./config');
+const { DATA_DIR, DB_FILE, WHATSAPP_NUMBER } = require('./config');
 const { saveJson, loadJson } = require('./cloudinary');
 
 for (const dir of [DATA_DIR]) fs.mkdirSync(dir, { recursive: true });
@@ -21,17 +21,25 @@ function loadDB() {
       products: SEED_PRODUCTS,
       orders: [],
       tokens: [],
-      settings: { whatsapp: process.env.WHATSAPP_NUMBER || '573209080898' },
+      settings: { whatsapp: WHATSAPP_NUMBER },
     };
   }
   try {
     return JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
   } catch {
-    return { products: [], orders: [], tokens: [], settings: { whatsapp: '573209080898' } };
+    return { products: [], orders: [], tokens: [], settings: { whatsapp: WHATSAPP_NUMBER } };
   }
 }
 
 const db = loadDB();
+
+function ensureWhatsApp() {
+  if (!db.settings || typeof db.settings.whatsapp !== 'string' || !db.settings.whatsapp.trim()) {
+    db.settings = { ...(db.settings || {}), whatsapp: WHATSAPP_NUMBER };
+  }
+}
+
+ensureWhatsApp();
 
 // Compatibilidad con productos creados antes de soportar varias imágenes.
 for (const product of db.products || []) {
@@ -60,7 +68,8 @@ async function initDB() {
       db.products = remote.products;
       db.orders = remote.orders || [];
       db.tokens = remote.tokens || [];
-      db.settings = remote.settings || { whatsapp: '573209080898' };
+      db.settings = remote.settings || { whatsapp: WHATSAPP_NUMBER };
+      ensureWhatsApp();
       for (const product of db.products) {
         if (!Array.isArray(product.images)) {
           product.images = product.image ? [product.image] : [];

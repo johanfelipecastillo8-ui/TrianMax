@@ -41,11 +41,13 @@ Esto levanta todo en **http://localhost:3000**:
 | ---------------- | --------------------------------------------- | --------------- |
 | `PORT`           | Puerto del servidor                           | `3000`          |
 | `ADMIN_PASSWORD` | Clave del panel del dueño                     | `trianmax2026`  |
-| `WHATSAPP_NUMBER`| Número inicial de WhatsApp (se edita en Ajustes) | `573209080898`   |
+| `WHATSAPP_NUMBER`| Ignorada: el número se edita en Ajustes y se restaura de la DB | — |
 | `CLOUDINARY_CLOUD_NAME` | Cloud name de tu cuenta de Cloudinary | — |
 | `CLOUDINARY_API_KEY` | API key de Cloudinary | — |
 | `CLOUDINARY_API_SECRET` | API secret de Cloudinary (solo en el servidor) | — |
 | `CLOUDINARY_FOLDER` | Carpeta donde se guardan las fotos | `trianmax` |
+
+Si Render todavía tiene `WHATSAPP_NUMBER` con el valor antiguo, no afecta: el servidor ya no lee esa variable. El número vigente es el que quede guardado en Ajustes, con `573209080898` como valor inicial.
 
 Las tres variables de Cloudinary son obligatorias para subir imágenes desde el panel. Configúralas en el entorno donde corra el servidor (nunca en la app Flutter). Las fotos nuevas se guardan en `https://res.cloudinary.com/<cloud_name>/image/upload/...` y esa URL se guarda en cada producto.
 
