@@ -32,7 +32,7 @@ class _AdminLoginState extends State<AdminLogin> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(gradient: RadialGradient(center: Alignment(0, -.6), radius: 1.2, colors: [Color(0x44C9B6F0), T.bg])),
+      decoration: const BoxDecoration(gradient: RadialGradient(center: Alignment(0, -.6), radius: 1.2, colors: [T.lavenderWash, T.bg])),
       child: Center(child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 380),
         child: Padding(

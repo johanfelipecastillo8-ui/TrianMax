@@ -228,7 +228,7 @@ class _CartDrawerState extends State<CartDrawer> {
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
         decoration: BoxDecoration(
-          color: active ? const Color(0x33C9B6F0) : T.surface,
+          color: active ? T.lavenderWash : T.surface,
           border: Border.all(color: active ? T.gold : T.line, width: active ? 1.5 : 1),
           borderRadius: BorderRadius.circular(13),
         ),

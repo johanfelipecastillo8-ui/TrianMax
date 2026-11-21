@@ -32,7 +32,7 @@ class _ProductSheetState extends State<ProductSheet> {
           border: Border(top: BorderSide(color: T.line)),
         ),
         child: ListView(controller: ctrl, padding: const EdgeInsets.fromLTRB(20, 12, 20, 30), children: [
-          Center(child: Container(width: 44, height: 5, decoration: BoxDecoration(color: const Color(0x333B3450), borderRadius: BorderRadius.circular(99)))),
+          Center(child: Container(width: 44, height: 5, decoration: BoxDecoration(color: const Color(0x33706A78), borderRadius: BorderRadius.circular(99)))),
           const SizedBox(height: 14),
           Stack(children: [
             ClipRRect(
@@ -49,7 +49,7 @@ class _ProductSheetState extends State<ProductSheet> {
             Positioned(
               top: 10, right: 10,
               child: CircleAvatar(
-                backgroundColor: const Color(0xE6F5EDFA),
+                backgroundColor: const Color(0xE6F7F2EC),
                 child: IconButton(
                   icon: const Icon(Icons.close, size: 18),
                   color: T.text,

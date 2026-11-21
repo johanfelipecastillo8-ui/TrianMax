@@ -305,7 +305,7 @@ return Container(
 width: double.infinity,
 padding: const EdgeInsets.fromLTRB(20, 48, 20, 28),
 decoration: const BoxDecoration(
-gradient: RadialGradient(center: Alignment(0, -.8), radius: 1.4, colors: [Color(0x44C9B6F0), T.bg]),
+gradient: RadialGradient(center: Alignment(0, -.8), radius: 1.4, colors: [T.lavenderWash, T.bg]),
 ),
 child: Column(children: [
 const Text('CATÁLOGO 2026', style: TextStyle(letterSpacing: 10, fontSize: 12, color: T.muted)),
@@ -437,7 +437,7 @@ border: Border.all(color: T.line),
 gradient: const LinearGradient(
 begin: Alignment.topLeft,
 end: Alignment.bottomRight,
-colors: [Color(0x33F6BFD2), T.surface],
+colors: [T.blushWash, T.surface],
 ),
 ),
 child: Row(
@@ -459,7 +459,7 @@ children: [
 Container(
 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
 decoration: BoxDecoration(
-color: const Color(0x44C9B6F0),
+color: T.lavenderWash,
 borderRadius: BorderRadius.circular(99),
 border: Border.all(color: T.line),
 ),

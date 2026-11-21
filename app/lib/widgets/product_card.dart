@@ -83,7 +83,7 @@ class ProductCard extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: T.goldLight,
                     side: const BorderSide(color: T.line),
-                    backgroundColor: const Color(0x33C9B6F0),
+                    backgroundColor: T.lavenderWash,
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
