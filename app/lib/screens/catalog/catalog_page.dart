@@ -149,6 +149,7 @@ class _CatalogPageState extends State<CatalogPage> {
       final order = await Api.createOrder({
         'name': form['name'],
         'phone': form['phone'],
+        'address': form['address'],
         'payment': form['payment'],
         'shipMethod': form['shipMethod'],
         'note': form['note'],
@@ -174,6 +175,7 @@ class _CatalogPageState extends State<CatalogPage> {
         ..writeln('')
         ..writeln('Nombre: ${order.name}')
         ..writeln('Celular: ${order.phone}')
+        ..writeln('Dirección: ${order.address}')
         ..writeln('Entrega: ${shipLabels[order.shipMethod]}')
         ..writeln('Pago: ${order.payment}');
       if (order.note.isNotEmpty) msg.writeln('Nota: ${order.note}');

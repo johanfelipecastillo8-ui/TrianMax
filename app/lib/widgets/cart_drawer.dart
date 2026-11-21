@@ -30,6 +30,7 @@ class CartDrawer extends StatefulWidget {
 class _CartDrawerState extends State<CartDrawer> {
   final nameCtrl = TextEditingController();
   final phoneCtrl = TextEditingController();
+  final addressCtrl = TextEditingController();
   final noteCtrl = TextEditingController();
   String? payment;
   String shipMethod = 'recojo';
@@ -45,6 +46,7 @@ class _CartDrawerState extends State<CartDrawer> {
   Future<void> _submit() async {
     final name = nameCtrl.text.trim();
     final phone = phoneCtrl.text.replaceAll(RegExp(r'\D'), '');
+    final address = addressCtrl.text.trim();
     String? err;
     if (widget.cart.isEmpty) {
       err = 'Tu carrito está vacío';
@@ -52,6 +54,8 @@ class _CartDrawerState extends State<CartDrawer> {
       err = 'Completa tu nombre';
     } else if (phone.length < 9) {
       err = 'Ingresa un número de celular válido';
+    } else if (address.isEmpty) {
+      err = 'Ingresa tu dirección de residencia';
     } else if (payment == null) {
       err = 'Selecciona cómo vas a pagar';
     }
@@ -64,11 +68,12 @@ class _CartDrawerState extends State<CartDrawer> {
       await widget.onCheckout({
         'name': name,
         'phone': phone,
+        'address': address,
         'payment': payment,
         'shipMethod': shipMethod,
         'note': noteCtrl.text.trim(),
       });
-      nameCtrl.clear(); phoneCtrl.clear(); noteCtrl.clear();
+      nameCtrl.clear(); phoneCtrl.clear(); addressCtrl.clear(); noteCtrl.clear();
       if (mounted) setState(() { payment = null; shipMethod = 'recojo'; });
     } finally {
       if (mounted) setState(() => sending = false);
@@ -166,6 +171,8 @@ class _CartDrawerState extends State<CartDrawer> {
               const SizedBox(height: 8),
               TextField(controller: phoneCtrl, enabled: widget.cart.isNotEmpty, keyboardType: TextInputType.phone, style: const TextStyle(color: T.text), decoration: const InputDecoration(hintText: 'Tu número de celular', isDense: true, contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10))),
               const SizedBox(height: 8),
+              TextField(controller: addressCtrl, enabled: widget.cart.isNotEmpty, keyboardType: TextInputType.streetAddress, style: const TextStyle(color: T.text), decoration: const InputDecoration(hintText: 'Dirección de residencia', isDense: true, contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10))),
+              const SizedBox(height: 8),
               Row(children: [
                 for (final e in shipCosts.entries)
                   Expanded(
@@ -182,7 +189,7 @@ class _CartDrawerState extends State<CartDrawer> {
                 isDense: true,
                 style: const TextStyle(color: T.text, fontSize: 13),
                 decoration: const InputDecoration(hintText: '¿Cómo vas a pagar?', isDense: true, contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10)),
-                items: const ['Efectivo', 'Yape', 'Plin', 'Transferencia bancaria', 'Tarjeta']
+                items: const ['Nequi', 'Efectivo']
                     .map((m) => DropdownMenuItem(value: m, child: Text(m)))
                     .toList(),
                 onChanged: widget.cart.isEmpty ? null : (v) => setState(() => payment = v),

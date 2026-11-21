@@ -89,6 +89,8 @@ class _AdminOrdersTabState extends State<AdminOrdersTab> {
               ]),
               const SizedBox(height: 8),
               Text('${o.name} · ${o.phone}', maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+              if (o.address.isNotEmpty)
+                Text('Dirección: ${o.address}', maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(color: T.muted, fontSize: 11.5)),
               Text('${shipLabels[o.shipMethod]} · Pago: ${o.payment}', maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: T.muted, fontSize: 11.5)),
               const Divider(height: 18, color: T.softLine),
               for (final it in o.items)

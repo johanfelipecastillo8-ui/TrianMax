@@ -18,6 +18,7 @@ class Order {
   final int total;
   final String name;
   final String phone;
+  final String address;
   final String payment;
   final String note;
   final String status;
@@ -32,6 +33,7 @@ class Order {
     required this.total,
     required this.name,
     required this.phone,
+    required this.address,
     required this.payment,
     required this.note,
     required this.status,
@@ -47,6 +49,7 @@ class Order {
         total: j['total'],
         name: j['name'],
         phone: j['phone'],
+        address: (j['address'] as String?) ?? '',
         payment: j['payment'],
         note: (j['note'] as String?) ?? '',
         status: j['status'],

@@ -16,6 +16,7 @@ module.exports = {
   CLOUDINARY_FOLDER: process.env.CLOUDINARY_FOLDER || 'trianmax',
   WEB_DIR: path.join(__dirname, '..', '..', 'app', 'build', 'web'),
   SHIP_METHODS: { recojo: 0, delivery: 10000, nacional: 15000 },
+  PAYMENT_METHODS: ['Nequi', 'Efectivo'],
   ORDER_STATUSES: ['nuevo', 'confirmado', 'entregado', 'cancelado'],
   MAX_TOKENS: 20,
 };

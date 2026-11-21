@@ -93,7 +93,7 @@ class ProductCard extends StatelessWidget {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                   icon: const Icon(Icons.add, size: 14),
-                  label: const Text('+ Agregar', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12)),
+                  label: const Text('Agregar', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12)),
                 ),
               ),
             ]),

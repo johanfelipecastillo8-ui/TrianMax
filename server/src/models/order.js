@@ -1,7 +1,7 @@
 'use strict';
 
 const { db, saveDB } = require('../db');
-const { SHIP_METHODS } = require('../config');
+const { SHIP_METHODS, PAYMENT_METHODS } = require('../config');
 const ProductModel = require('./product');
 
 class OrderModel {
@@ -21,6 +21,7 @@ class OrderModel {
   static build(input) {
     const name = String(input.name || '').trim();
     const phone = String(input.phone || '').replace(/\D/g, '');
+    const address = String(input.address || '').trim();
     const note = String(input.note || '').trim();
     const payment = String(input.payment || '').trim();
     const shipMethod = String(input.shipMethod || 'recojo');
@@ -29,7 +30,8 @@ class OrderModel {
     const errors = [];
     if (!name) errors.push('El nombre es obligatorio');
     if (phone.length < 9) errors.push('Número de celular inválido');
-    if (!payment) errors.push('Selecciona el método de pago');
+    if (!address) errors.push('La dirección de residencia es obligatoria');
+    if (!PAYMENT_METHODS.includes(payment)) errors.push('Método de pago inválido');
     if (!Object.prototype.hasOwnProperty.call(SHIP_METHODS, shipMethod)) errors.push('Método de entrega inválido');
     if (!items.length) errors.push('El pedido está vacío');
     if (errors.length) return { errors };
@@ -59,6 +61,7 @@ class OrderModel {
         total: subtotal + shipping,
         name,
         phone,
+        address,
         payment,
         note,
         status: 'nuevo',
