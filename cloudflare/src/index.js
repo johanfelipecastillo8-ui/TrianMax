@@ -2,6 +2,7 @@ const APP_NAME = 'TRIAN MAX';
 const APP_DESCRIPTION = 'Catálogo oficial TRIAN MAX 2026. Audio, belleza, smartwatch y más. Pedidos por WhatsApp.';
 const WHATSAPP = '573209080898';
 const DEFAULT_ORIGIN = 'https://trianmax.onrender.com';
+const GOOGLE_FILE_RE = /^\/google[A-Za-z0-9_-]+\.html$/i;
 
 const escapeHtml = (value) => String(value)
   .replace(/&/g, '&amp;')
@@ -50,6 +51,22 @@ function seoFiles(pathname, base) {
   return null;
 }
 
+// Google Search Console Sirve el archivo de verificación desde un secreto (GOOGLE_SITE_VERIFICATION).
+function googleVerification(pathname, env, method) {
+  if (!GOOGLE_FILE_RE.test(pathname)) return null;
+
+  const content = String(env.GOOGLE_SITE_VERIFICATION || '').trim();
+  if (!content) return null;
+
+  return new Response(method === 'HEAD' ? null : content, {
+    status: 200,
+    headers: {
+      'content-type': 'text/plain; charset=utf-8',
+      'cache-control': 'public, max-age=3600',
+    },
+  });
+}
+
 function rewriteLocation(response, base, origin) {
   const location = response.headers.get('location');
   if (!location) return;
@@ -64,7 +81,7 @@ function rewriteLocation(response, base, origin) {
   }
 }
 
-async function addSeo(response, base) {
+async function addSeo(response, base, env) {
   const type = response.headers.get('content-type') || '';
   if (!type.toLowerCase().includes('text/html')) return response;
 
@@ -79,8 +96,10 @@ async function addSeo(response, base) {
     description: APP_DESCRIPTION,
   }));
 
+  const verificationMeta = String(env.GOOGLE_META_CONTENT || '').trim();
   const tags = [
     '',
+    ...(verificationMeta ? [`  <meta name="google-site-verification" content="${escapeHtml(verificationMeta)}">`] : []),
     `  <link rel="canonical" href="${canonical}">`,
     `  <meta property="og:type" content="website">`,
     `  <meta property="og:site_name" content="${APP_NAME}">`,
@@ -115,6 +134,9 @@ export default {
     const origin = String(env.ORIGIN || DEFAULT_ORIGIN).replace(/\/$/, '');
 
     if (request.method === 'GET' || request.method === 'HEAD') {
+      const verification = googleVerification(url.pathname, env, request.method);
+      if (verification) return verification;
+
       const special = seoFiles(url.pathname, base);
       if (special) return special;
     }
@@ -143,7 +165,7 @@ export default {
         return new Response(null, { status: response.status, headers: response.headers });
       }
 
-      return await addSeo(response, base);
+      return await addSeo(response, base, env);
     } catch (error) {
       return textResponse(
         `${APP_NAME} no está disponible en este momento. Intenta nuevamente en unos segundos.`,

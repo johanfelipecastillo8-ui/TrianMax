@@ -58,10 +58,45 @@ Wrangler imprimirá la URL final. Ábrela y comprueba que cargue el catálogo.
 1. Entra a **Google Search Console**.
 2. Agrega una propiedad de **URL prefix** con la URL que te dio Wrangler:
    `https://trianmax-catalogo-2026.mitienda.workers.dev`
-3. Verifica la propiedad (opción HTML tag o DNS, según te ofrezca Google).
+3. Verifica la propiedad con **Archivo HTML** (ver sección siguiente).
 4. Envía el sitemap:
    `https://trianmax-catalogo-2026.mitienda.workers.dev/sitemap.xml`
 5. Pide indexación de la homepage.
+
+## Verificación con archivo HTML en Search Console
+
+Como el Worker proxya todo a Render, no puedes “subir” el archivo por FTP. En su lugar, guárdalo como un secreto de Cloudflare:
+
+1. En Search Console, descarga el archivo `googleXXXXXXXX.html`.
+2. Ábrelo con el Bloc de notas y copia **todo** el contenido (una sola línea, por ejemplo `google-site-verification: googleXXXXXXXX.html`).
+3. Pon el archivo descargado dentro de la carpeta `cloudflare` (o copia su ruta).
+4. En la terminal, dentro de `cloudflare`:
+
+```powershell
+.\verify.ps1 .\googleXXXXXXXX.html
+```
+
+El script lee el archivo y configura el secreto automáticamente. Si prefieres hacerlo manualmente:
+
+```powershell
+npx wrangler secret put GOOGLE_SITE_VERIFICATION
+```
+
+Pega el contenido cuando Wrangler te lo pida y presiona Enter.
+
+5. Vuelve a Search Console y haz clic en **Verificar**.
+
+El Worker responderá automáticamente a cualquier ruta `googleXXXXXXXX.html` con ese contenido. No necesitas volver a desplegar después de cambiar el secreto.
+
+### Alternativa: etiqueta HTML
+
+Si prefieres el método **Etiqueta HTML**, copia el valor del atributo `content` que te da Google y ejecuta:
+
+```powershell
+npx wrangler secret put GOOGLE_META_CONTENT
+```
+
+El Worker inyectará `<meta name="google-site-verification" ...>` en el `<head>`.
 
 ## Notas
 
