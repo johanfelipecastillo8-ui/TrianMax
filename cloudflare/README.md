@@ -27,9 +27,25 @@ El dominio final depende del subdomain `workers.dev` que elijas al crear tu cuen
 
 Necesitas Node.js 18 o superior.
 
-```bash
+```powershell
 cd cloudflare
 npx wrangler login
+.\deploy.ps1
+```
+
+`deploy.ps1` define `WRANGLER_CACHE_DIR` en una carpeta temporal. Esto evita el error:
+
+```
+A permission error occurred while accessing the file system.
+Affected path: D:\node_modules\.cache\wrangler
+```
+
+Wrangler intenta usar la primera carpeta `node_modules` que encuentra hacia arriba; en esta PC dio con `D:\node_modules`, que es de solo lectura.
+
+Si prefieres hacerlo manualmente:
+
+```powershell
+$env:WRANGLER_CACHE_DIR = Join-Path $env:TEMP 'wrangler-cache'
 npx wrangler deploy
 ```
 
