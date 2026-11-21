@@ -19,6 +19,13 @@ class TrianMaxApp extends StatelessWidget {
       title: 'TRIAN MAX — Catálogo 2026',
       debugShowCheckedModeBanner: false,
       theme: T.theme,
+      builder: (context, child) {
+        final scale = MediaQuery.of(context).textScaler.scale(1).clamp(1.0, 1.15);
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(scale)),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
       initialRoute: '/',
       routes: {
         '/': (_) => const CatalogPage(),

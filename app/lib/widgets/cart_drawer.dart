@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import '../core/responsive.dart';
 import '../core/theme.dart';
 import '../core/utils.dart';
 import '../data/models/cart_item.dart';
@@ -79,6 +80,7 @@ class _CartDrawerState extends State<CartDrawer> {
     final shipCost = widget.cart.isEmpty ? 0 : (shipCosts[shipMethod] ?? 0);
     final total = subtotal + shipCost;
     return Drawer(
+      width: Responsive.drawerWidth(context),
       backgroundColor: T.bg,
       child: SafeArea(child: Column(children: [
         Padding(
@@ -110,14 +112,18 @@ class _CartDrawerState extends State<CartDrawer> {
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(16), border: Border.all(color: T.line)),
                       child: Row(children: [
-                        ClipRRect(borderRadius: BorderRadius.circular(12), child: SizedBox(width: 60, height: 60, child: ProductImage(image: p.image, category: p.category, iconSize: 26))),
-                        const SizedBox(width: 12),
+                        ClipRRect(borderRadius: BorderRadius.circular(10), child: SizedBox(width: 50, height: 50, child: ProductImage(image: p.image, category: p.category, iconSize: 22))),
+                        const SizedBox(width: 8),
                         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text(p.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13)),
-                          const SizedBox(height: 3),
-                          Text(fmt(p.price), style: const TextStyle(color: T.goldLight, fontWeight: FontWeight.w700, fontSize: 13)),
+                          Text(p.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12.5)),
+                          const SizedBox(height: 2),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Text(fmt(p.price), style: const TextStyle(color: T.goldLight, fontWeight: FontWeight.w700, fontSize: 12.5)),
+                          ),
                           TextButton(
-                            style: TextButton.styleFrom(foregroundColor: T.muted, padding: EdgeInsets.zero, minimumSize: const Size(0, 22), textStyle: const TextStyle(fontSize: 11, decoration: TextDecoration.underline)),
+                            style: TextButton.styleFrom(foregroundColor: T.muted, padding: EdgeInsets.zero, minimumSize: const Size(0, 20), textStyle: const TextStyle(fontSize: 10.5, decoration: TextDecoration.underline)),
                             onPressed: () => widget.onRemove(item.id),
                             child: const Text('Quitar'),
                           ),
@@ -136,26 +142,30 @@ class _CartDrawerState extends State<CartDrawer> {
                 ),
         ),
         Container(
-          padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
           decoration: const BoxDecoration(border: Border(top: BorderSide(color: T.softLine))),
-          child: SafeArea(
-            top: false,
-            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.52),
+            child: SingleChildScrollView(
+              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                const Text('Total', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
-                Text(fmt(total), style: const TextStyle(fontSize: 23, fontWeight: FontWeight.w800, color: T.goldLight)),
+                const Text('Total', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800)),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(fmt(total), style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w800, color: T.goldLight)),
+                ),
               ]),
               if (widget.cart.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.only(top: 2, bottom: 12),
-                  child: Text(shipCost == 0 ? 'Incluye recojo en tienda (sin costo)' : 'Incluye ${shipLabels[shipMethod]} (${fmt(shipCost)})', textAlign: TextAlign.right, style: const TextStyle(color: T.muted, fontSize: 11.5)),
+                  padding: const EdgeInsets.only(top: 2, bottom: 8),
+                  child: Text(shipCost == 0 ? 'Recojo sin costo' : 'Incluye ${shipLabels[shipMethod]} (${fmt(shipCost)})', textAlign: TextAlign.right, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: T.muted, fontSize: 11)),
                 )
               else
                 const SizedBox(height: 12),
-              TextField(controller: nameCtrl, enabled: widget.cart.isNotEmpty, style: const TextStyle(color: T.text), decoration: const InputDecoration(hintText: 'Tu nombre')),
-              const SizedBox(height: 10),
-              TextField(controller: phoneCtrl, enabled: widget.cart.isNotEmpty, keyboardType: TextInputType.phone, style: const TextStyle(color: T.text), decoration: const InputDecoration(hintText: 'Tu número de celular')),
-              const SizedBox(height: 10),
+              TextField(controller: nameCtrl, enabled: widget.cart.isNotEmpty, style: const TextStyle(color: T.text), decoration: const InputDecoration(hintText: 'Tu nombre', isDense: true, contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10))),
+              const SizedBox(height: 8),
+              TextField(controller: phoneCtrl, enabled: widget.cart.isNotEmpty, keyboardType: TextInputType.phone, style: const TextStyle(color: T.text), decoration: const InputDecoration(hintText: 'Tu número de celular', isDense: true, contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10))),
+              const SizedBox(height: 8),
               Row(children: [
                 for (final e in shipCosts.entries)
                   Expanded(
@@ -165,20 +175,21 @@ class _CartDrawerState extends State<CartDrawer> {
                     ),
                   ),
               ]),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               DropdownButtonFormField<String>(
                 initialValue: payment,
                 dropdownColor: T.surface2,
-                style: const TextStyle(color: T.text, fontSize: 14),
-                decoration: const InputDecoration(hintText: '¿Cómo vas a pagar?'),
+                isDense: true,
+                style: const TextStyle(color: T.text, fontSize: 13),
+                decoration: const InputDecoration(hintText: '¿Cómo vas a pagar?', isDense: true, contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10)),
                 items: const ['Efectivo', 'Yape', 'Plin', 'Transferencia bancaria', 'Tarjeta']
                     .map((m) => DropdownMenuItem(value: m, child: Text(m)))
                     .toList(),
                 onChanged: widget.cart.isEmpty ? null : (v) => setState(() => payment = v),
               ),
+              const SizedBox(height: 8),
+              TextField(controller: noteCtrl, enabled: widget.cart.isNotEmpty, maxLines: 1, style: const TextStyle(color: T.text), decoration: const InputDecoration(hintText: 'Nota (opcional)', isDense: true, contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10))),
               const SizedBox(height: 10),
-              TextField(controller: noteCtrl, enabled: widget.cart.isNotEmpty, maxLines: 2, style: const TextStyle(color: T.text), decoration: const InputDecoration(hintText: 'Nota (opcional)')),
-              const SizedBox(height: 14),
               Container(
                 height: 50,
                 decoration: BoxDecoration(
@@ -191,20 +202,24 @@ class _CartDrawerState extends State<CartDrawer> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
                   child: sending
                       ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: T.onAccent))
-                      : const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                          Icon(Icons.chat_bubble_outline, size: 18, color: T.onAccent),
-                          SizedBox(width: 9),
-                          Text('Enviar pedido por WhatsApp', style: TextStyle(color: T.onAccent, fontWeight: FontWeight.w800, fontSize: 15)),
-                        ]),
+                      : const FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                            Icon(Icons.chat_bubble_outline, size: 17, color: T.onAccent),
+                            SizedBox(width: 8),
+                            Text('Enviar pedido por WhatsApp', style: TextStyle(color: T.onAccent, fontWeight: FontWeight.w800, fontSize: 14)),
+                          ]),
+                        ),
                 ),
               ),
               const SizedBox(height: 10),
               OutlinedButton(
                 onPressed: widget.onAskInfo,
-                style: OutlinedButton.styleFrom(foregroundColor: T.goldLight, side: const BorderSide(color: T.line), padding: const EdgeInsets.symmetric(vertical: 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99))),
-                child: const Text('Solo pedir información', style: TextStyle(fontWeight: FontWeight.w700)),
+                style: OutlinedButton.styleFrom(foregroundColor: T.goldLight, side: const BorderSide(color: T.line), padding: const EdgeInsets.symmetric(vertical: 11), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99))),
+                child: const Text('Solo pedir información', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5)),
               ),
-            ]),
+              ]),
+            ),
           ),
         ),
       ])),
@@ -215,18 +230,18 @@ class _CartDrawerState extends State<CartDrawer> {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(99),
-      child: Padding(padding: const EdgeInsets.all(6), child: Icon(icon, size: 15, color: T.text)),
+      child: Padding(padding: const EdgeInsets.all(4), child: Icon(icon, size: 13, color: T.text)),
     );
   }
 
   Widget _shipBtn(String key, int cost) {
     final active = shipMethod == key;
-    final label = {'recojo': 'Recojo', 'delivery': 'Delivery', 'nacional': 'Envío nacional'}[key]!;
+    final label = {'recojo': 'Recojo', 'delivery': 'Delivery', 'nacional': 'Nacional'}[key]!;
     return GestureDetector(
       onTap: widget.cart.isEmpty ? null : () => setState(() => shipMethod = key),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
         decoration: BoxDecoration(
           color: active ? T.lavenderWash : T.surface,
           border: Border.all(color: active ? T.gold : T.line, width: active ? 1.5 : 1),

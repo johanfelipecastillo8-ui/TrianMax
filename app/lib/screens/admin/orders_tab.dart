@@ -70,7 +70,7 @@ class _AdminOrdersTabState extends State<AdminOrdersTab> {
               Row(children: [
                 Text('#${o.id}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: T.goldLight)),
                 const SizedBox(width: 10),
-                Text(fmtDate(o.createdAt), style: const TextStyle(color: T.muted, fontSize: 12)),
+                Flexible(child: Text(fmtDate(o.createdAt), maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: T.muted, fontSize: 11.5))),
                 const Spacer(),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -88,16 +88,16 @@ class _AdminOrdersTabState extends State<AdminOrdersTab> {
                 ),
               ]),
               const SizedBox(height: 8),
-              Text('${o.name} · ${o.phone}', style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13.5)),
-              Text('${shipLabels[o.shipMethod]} · Pago: ${o.payment}', style: const TextStyle(color: T.muted, fontSize: 12)),
+              Text('${o.name} · ${o.phone}', maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+              Text('${shipLabels[o.shipMethod]} · Pago: ${o.payment}', maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: T.muted, fontSize: 11.5)),
               const Divider(height: 18, color: T.softLine),
               for (final it in o.items)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 3),
                   child: Row(children: [
-                    Text('${it.qty}x ${it.name}', style: const TextStyle(fontSize: 12.5, color: T.text)),
-                    const Spacer(),
-                    Text(fmt(it.price * it.qty), style: const TextStyle(fontSize: 12.5, color: T.muted)),
+                    Expanded(child: Text('${it.qty}x ${it.name}', maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 12, color: T.text))),
+                    const SizedBox(width: 8),
+                    FittedBox(fit: BoxFit.scaleDown, child: Text(fmt(it.price * it.qty), style: const TextStyle(fontSize: 12, color: T.muted))),
                   ]),
                 ),
               if (o.shipping > 0)
@@ -110,10 +110,10 @@ class _AdminOrdersTabState extends State<AdminOrdersTab> {
               Row(children: [
                 const Text('TOTAL', style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1.5, fontSize: 12)),
                 const Spacer(),
-                Text(fmt(o.total), style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: T.goldLight)),
+                FittedBox(fit: BoxFit.scaleDown, child: Text(fmt(o.total), style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: T.goldLight))),
               ]),
               if (o.note.isNotEmpty)
-                Padding(padding: const EdgeInsets.only(top: 8), child: Text('Nota: ${o.note}', style: const TextStyle(color: T.muted, fontSize: 12, fontStyle: FontStyle.italic))),
+                Padding(padding: const EdgeInsets.only(top: 8), child: Text('Nota: ${o.note}', maxLines: 3, overflow: TextOverflow.ellipsis, style: const TextStyle(color: T.muted, fontSize: 12, fontStyle: FontStyle.italic))),
             ]),
           );
         },

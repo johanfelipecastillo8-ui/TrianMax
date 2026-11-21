@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import '../core/responsive.dart';
 import '../core/theme.dart';
 import '../core/utils.dart';
 import '../data/models/product.dart';
@@ -25,7 +26,7 @@ class ProductCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Expanded(
-          flex: 12,
+          flex: 8,
           child: GestureDetector(
             onTap: onView,
             child: Stack(fit: StackFit.expand, children: [
@@ -46,23 +47,27 @@ class ProductCard extends StatelessWidget {
           ),
         ),
         Expanded(
-          flex: 11,
+          flex: 12,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(p.category.toUpperCase(), style: const TextStyle(color: T.goldDark, fontSize: 9.5, letterSpacing: 3, fontWeight: FontWeight.w700)),
+              Text(p.category.toUpperCase(), maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: T.goldDark, fontSize: 9, letterSpacing: 2, fontWeight: FontWeight.w700)),
               const SizedBox(height: 4),
-              Text(p.name, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15.5, height: 1.15)),
+              Text(p.name, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.w800, fontSize: Responsive.isMobile(context) ? 13.5 : 15.5, height: 1.15)),
               const SizedBox(height: 4),
-              Text(p.description, maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(color: T.muted, fontSize: 12, height: 1.35)),
+              Text(p.description, maxLines: Responsive.isMobile(context) ? 1 : 2, overflow: TextOverflow.ellipsis, style: const TextStyle(color: T.muted, fontSize: 11.5, height: 1.3)),
               const SizedBox(height: 7),
-              Row(children: [
-                Text(fmt(p.price), style: const TextStyle(color: T.goldLight, fontWeight: FontWeight.w800, fontSize: 18)),
-                if (p.oldPrice != null) ...[
-                  const SizedBox(width: 8),
-                  Text(fmt(p.oldPrice!), style: const TextStyle(color: T.muted, fontSize: 11.5, decoration: TextDecoration.lineThrough)),
-                ],
-              ]),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  Text(fmt(p.price), style: TextStyle(color: T.goldLight, fontWeight: FontWeight.w800, fontSize: Responsive.isMobile(context) ? 15 : 18)),
+                  if (p.oldPrice != null) ...[
+                    const SizedBox(width: 8),
+                    Text(fmt(p.oldPrice!), style: const TextStyle(color: T.muted, fontSize: 11, decoration: TextDecoration.lineThrough)),
+                  ],
+                ]),
+              ),
               const SizedBox(height: 5),
               Row(children: [
                 Icon(Icons.inventory_2_outlined, size: 12, color: stockColor),
@@ -84,11 +89,11 @@ class ProductCard extends StatelessWidget {
                     foregroundColor: T.goldLight,
                     side: const BorderSide(color: T.line),
                     backgroundColor: T.lavenderWash,
-                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  icon: const Icon(Icons.add, size: 16),
-                  label: const Text('+ Agregar', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13)),
+                  icon: const Icon(Icons.add, size: 14),
+                  label: const Text('+ Agregar', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 12)),
                 ),
               ),
             ]),

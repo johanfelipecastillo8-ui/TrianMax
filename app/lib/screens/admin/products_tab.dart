@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import '../../core/responsive.dart';
 import '../../core/theme.dart';
 import '../../core/utils.dart';
 import '../../data/models/product.dart';
@@ -44,7 +45,7 @@ class _AdminProductsTabState extends State<AdminProductsTab> {
       context: context,
       builder: (c) => AlertDialog(
         title: const Text('Eliminar producto'),
-        content: Text('¿Eliminar "${p.name}"? Esta acción no se puede deshacer.'),
+        content: Text('¿Eliminar "${p.name}"? Esta acción no se puede deshacer.', maxLines: 3, overflow: TextOverflow.ellipsis),
         actions: [
           TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Cancelar')),
           FilledButton(style: FilledButton.styleFrom(foregroundColor: T.onAccent, backgroundColor: T.dangerDeep), onPressed: () => Navigator.pop(c, true), child: const Text('Eliminar')),
@@ -61,7 +62,7 @@ class _AdminProductsTabState extends State<AdminProductsTab> {
     }
   }
 
-  void _toast(String m) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(m)));
+  void _toast(String m) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(m, maxLines: 2, overflow: TextOverflow.ellipsis)));
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +72,7 @@ class _AdminProductsTabState extends State<AdminProductsTab> {
         onPressed: () => _edit(),
         backgroundColor: T.gold,
         icon: const Icon(Icons.add, color: T.onAccent),
-        label: const Text('Nuevo producto', style: TextStyle(color: T.onAccent, fontWeight: FontWeight.w800)),
+        label: Text(Responsive.isMobile(context) ? 'Nuevo' : 'Nuevo producto', style: const TextStyle(color: T.onAccent, fontWeight: FontWeight.w800, fontSize: 13)),
       ),
       body: loading
           ? const Center(child: CircularProgressIndicator(color: T.gold))
@@ -92,27 +93,29 @@ class _AdminProductsTabState extends State<AdminProductsTab> {
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(16), border: Border.all(color: T.line)),
                         child: Row(children: [
-                          ClipRRect(borderRadius: BorderRadius.circular(12), child: SizedBox(width: 62, height: 62, child: ProductImage(image: p.image, category: p.category, iconSize: 26))),
-                          const SizedBox(width: 12),
+                          ClipRRect(borderRadius: BorderRadius.circular(10), child: SizedBox(width: 52, height: 52, child: ProductImage(image: p.image, category: p.category, iconSize: 22))),
+                          const SizedBox(width: 8),
                           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                             Text(p.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14)),
-                            Text(p.category, style: const TextStyle(color: T.muted, fontSize: 11.5)),
+                            Text(p.category, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: T.muted, fontSize: 11.5)),
                             const SizedBox(height: 3),
                             Row(children: [
-                              Text(fmt(p.price), style: const TextStyle(color: T.goldLight, fontWeight: FontWeight.w800, fontSize: 14)),
-                              const SizedBox(width: 8),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: stockColor.withValues(alpha: .15),
-                                  borderRadius: BorderRadius.circular(6),
+                              FittedBox(fit: BoxFit.scaleDown, child: Text(fmt(p.price), style: const TextStyle(color: T.goldLight, fontWeight: FontWeight.w800, fontSize: 13.5))),
+                              const SizedBox(width: 6),
+                              Flexible(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: stockColor.withValues(alpha: .15),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text('Stock: ${p.stock}', maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: stockColor)),
                                 ),
-                                child: Text('Stock: ${p.stock}', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: stockColor)),
                               ),
                             ]),
                           ])),
-                          IconButton(icon: const Icon(Icons.edit_outlined, size: 19, color: T.goldLight), onPressed: () => _edit(p)),
-                          IconButton(icon: const Icon(Icons.delete_outline, size: 19, color: T.dangerDeep), onPressed: () => _delete(p)),
+                          IconButton(icon: const Icon(Icons.edit_outlined, size: 17, color: T.goldLight), constraints: const BoxConstraints.tightFor(width: 40, height: 40), onPressed: () => _edit(p)),
+                          IconButton(icon: const Icon(Icons.delete_outline, size: 17, color: T.dangerDeep), constraints: const BoxConstraints.tightFor(width: 40, height: 40), onPressed: () => _delete(p)),
                         ]),
                       );
                     },

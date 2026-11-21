@@ -147,10 +147,11 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final dialogHeight = (MediaQuery.sizeOf(context).height * 0.82).clamp(320.0, 620.0).toDouble();
     return Dialog(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 520),
-        child: ListView(shrinkWrap: true, padding: const EdgeInsets.all(22), children: [
+      child: SizedBox(
+        height: dialogHeight,
+        child: ListView(padding: const EdgeInsets.all(20), children: [
           Text(widget.product == null ? 'Nuevo producto' : 'Editar producto', style: const TextStyle(fontSize: 19, fontWeight: FontWeight.w800)),
           const SizedBox(height: 8),
           const Text('Hasta 8 fotos por producto. Se muestran en el orden en que las agregas.', style: TextStyle(color: T.muted, fontSize: 12)),
@@ -183,9 +184,9 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
           _field(catCtrl, 'Categoría (ej. Audio & sound, Belleza…)'),
           const SizedBox(height: 10),
           Row(children: [
-            Expanded(child: _field(priceCtrl, 'Precio', numeric: true)),
+            Expanded(child: _field(priceCtrl, 'Precio', numeric: true, dense: true)),
             const SizedBox(width: 10),
-            Expanded(child: _field(oldPriceCtrl, 'Precio anterior (opcional)', numeric: true)),
+            Expanded(child: _field(oldPriceCtrl, 'Precio ant.', numeric: true, dense: true)),
           ]),
           const SizedBox(height: 10),
           _field(stockCtrl, 'Stock disponible', numeric: true),
@@ -264,12 +265,16 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
     );
   }
 
-  Widget _field(TextEditingController ctrl, String hint, {bool numeric = false}) {
+  Widget _field(TextEditingController ctrl, String hint, {bool numeric = false, bool dense = false}) {
     return TextField(
       controller: ctrl,
       keyboardType: numeric ? TextInputType.number : TextInputType.text,
       style: const TextStyle(color: T.text),
-      decoration: InputDecoration(hintText: hint),
+      decoration: InputDecoration(
+        hintText: hint,
+        isDense: dense,
+        contentPadding: dense ? const EdgeInsets.symmetric(horizontal: 12, vertical: 10) : null,
+      ),
     );
   }
 }

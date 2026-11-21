@@ -1,5 +1,6 @@
 import 'package:web/web.dart' as web;
 import 'package:material_ui/material_ui.dart';
+import '../../core/responsive.dart';
 import '../../core/theme.dart';
 import '../../data/services/api_service.dart';
 import 'login_view.dart';
@@ -33,28 +34,33 @@ class _AdminPageState extends State<AdminPage> {
   @override
   Widget build(BuildContext context) {
     if (!ready) return const Scaffold(body: Center(child: CircularProgressIndicator(color: T.gold)));
-    if (Api.token == null) return Scaffold(body: AdminLogin(onSuccess: () => setState(() {})));
+    if (Api.token == null) return Scaffold(body: SafeArea(child: AdminLogin(onSuccess: () => setState(() {}))));
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: T.bg,
-          title: ShaderMask(
-            shaderCallback: (r) => T.goldGradient.createShader(r),
-            child: const Text('TRIAN MAX · Panel', style: TextStyle(fontWeight: FontWeight.w800, color: Colors.white, fontSize: 16)),
+          titleSpacing: Responsive.isMobile(context) ? 4 : 16,
+          title: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: ShaderMask(
+              shaderCallback: (r) => T.goldGradient.createShader(r),
+              child: Text('TRIAN MAX${Responsive.isMobile(context) ? '' : ' · Panel'}', style: TextStyle(fontWeight: FontWeight.w800, color: Colors.white, fontSize: Responsive.isMobile(context) ? 13 : 16)),
+            ),
           ),
           bottom: const TabBar(
             indicatorColor: T.goldDark,
             labelColor: T.goldLight,
             unselectedLabelColor: T.muted,
-            labelStyle: TextStyle(fontWeight: FontWeight.w700),
+            labelStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5),
+            labelPadding: EdgeInsets.symmetric(horizontal: 14),
             tabs: [Tab(text: 'Productos'), Tab(text: 'Pedidos'), Tab(text: 'Ajustes')],
           ),
           actions: [
-            TextButton.icon(
+            IconButton(
+              tooltip: 'Ver catálogo',
               onPressed: () => Navigator.of(context).pushNamed('/'),
-              icon: const Icon(Icons.storefront_outlined, size: 17),
-              label: const Text('Ver catálogo', style: TextStyle(fontSize: 12)),
+              icon: const Icon(Icons.storefront_outlined, size: 19),
             ),
             IconButton(tooltip: 'Cerrar sesión', onPressed: _logout, icon: const Icon(Icons.logout, size: 19)),
           ],

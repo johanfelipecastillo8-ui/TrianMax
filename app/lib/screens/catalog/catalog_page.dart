@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:web/web.dart' as web;
 import 'package:material_ui/material_ui.dart';
+import '../../core/responsive.dart';
 import '../../core/theme.dart';
 import '../../core/utils.dart';
 import '../../data/models/cart_item.dart';
@@ -128,7 +129,7 @@ class _CatalogPageState extends State<CatalogPage> {
   }
 
   void _toast(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg, maxLines: 2, overflow: TextOverflow.ellipsis)));
   }
 
   Future<void> openProduct(Product p) async {
@@ -212,34 +213,39 @@ class _CatalogPageState extends State<CatalogPage> {
         backgroundColor: T.bg.withValues(alpha: .85),
         elevation: 0,
         scrolledUnderElevation: 0,
-        title: Row(children: [
+        titleSpacing: Responsive.isMobile(context) ? 4 : 16,
+        title: Row(mainAxisSize: MainAxisSize.min, children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.asset('assets/logo-trianmax.jpg', width: 38, height: 38),
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset('assets/logo-trianmax.jpg', width: Responsive.isMobile(context) ? 32 : 38, height: Responsive.isMobile(context) ? 32 : 38),
           ),
-          const SizedBox(width: 12),
-          ShaderMask(
-            shaderCallback: (r) => T.goldGradient.createShader(r),
-            child: const Text('TRIAN MAX', style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 2, color: Colors.white, fontSize: 15)),
+          const SizedBox(width: 8),
+          Flexible(
+            child: ShaderMask(
+              shaderCallback: (r) => T.goldGradient.createShader(r),
+              child: Text('TRIAN MAX', overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: Responsive.isMobile(context) ? 1 : 2, color: Colors.white, fontSize: Responsive.isMobile(context) ? 13 : 15)),
+            ),
           ),
         ]),
         actions: [
           Builder(
             builder: (c) => Padding(
-              padding: const EdgeInsets.only(right: 10),
+              padding: const EdgeInsets.only(right: 6),
               child: MaterialButton(
                 minWidth: 0,
                 padding: EdgeInsets.zero,
                 onPressed: () => Scaffold.of(c).openEndDrawer(),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                  padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 10 : 16, vertical: 8),
                   decoration: BoxDecoration(gradient: T.softGradient, borderRadius: BorderRadius.circular(99)),
-                  child: Row(children: [
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
                     const Icon(Icons.shopping_cart_outlined, size: 17, color: T.onAccent),
-                    const SizedBox(width: 7),
-                    const Text('Carrito', style: TextStyle(color: T.onAccent, fontWeight: FontWeight.w800, fontSize: 13)),
-                    if (cartCount > 0) ...[
+                    if (!Responsive.isMobile(context)) ...[
                       const SizedBox(width: 7),
+                      const Text('Carrito', style: TextStyle(color: T.onAccent, fontWeight: FontWeight.w800, fontSize: 13)),
+                    ],
+                    if (cartCount > 0) ...[
+                      const SizedBox(width: 6),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6),
                         decoration: BoxDecoration(color: T.blushDeep, borderRadius: BorderRadius.circular(99)),
@@ -274,16 +280,16 @@ class _CatalogPageState extends State<CatalogPage> {
                     filtered.isEmpty
                         ? const SliverFillRemaining(
                             hasScrollBody: false,
-                            child: Center(child: Text('No encontramos productos para tu búsqueda.', style: TextStyle(color: T.muted))),
+                            child: Center(child: Padding(padding: EdgeInsets.symmetric(horizontal: 24), child: Text('No encontramos productos para tu búsqueda.', textAlign: TextAlign.center, style: TextStyle(color: T.muted)))),
                           )
                         : SliverPadding(
                             padding: const EdgeInsets.fromLTRB(16, 8, 16, 90),
                             sliver: SliverGrid(
-                              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                                maxCrossAxisExtent: 300,
-                                childAspectRatio: .56,
-                                mainAxisSpacing: 16,
-                                crossAxisSpacing: 16,
+                              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: Responsive.isMobile(context) ? 220 : 300,
+                                childAspectRatio: Responsive.isMobile(context) ? .55 : .62,
+                                mainAxisSpacing: 12,
+                                crossAxisSpacing: 12,
                               ),
                               delegate: SliverChildBuilderDelegate(
 (c, i) => ProductCard(
@@ -303,19 +309,27 @@ const SliverToBoxAdapter(child: AppFooter()),
 Widget _hero() {
 return Container(
 width: double.infinity,
-padding: const EdgeInsets.fromLTRB(20, 48, 20, 28),
+padding: EdgeInsets.fromLTRB(
+    Responsive.pagePadding(context),
+    Responsive.isMobile(context) ? 28 : 48,
+    Responsive.pagePadding(context),
+    Responsive.isMobile(context) ? 22 : 28,
+  ),
 decoration: const BoxDecoration(
 gradient: RadialGradient(center: Alignment(0, -.8), radius: 1.4, colors: [T.lavenderWash, T.bg]),
 ),
 child: Column(children: [
-const Text('CATÁLOGO 2026', style: TextStyle(letterSpacing: 10, fontSize: 12, color: T.muted)),
+Text('CATÁLOGO 2026', style: TextStyle(letterSpacing: Responsive.isMobile(context) ? 5 : 10, fontSize: Responsive.isMobile(context) ? 10.5 : 12, color: T.muted)),
 const SizedBox(height: 14),
-ShaderMask(
+FittedBox(
+fit: BoxFit.scaleDown,
+child: ShaderMask(
 shaderCallback: (r) => T.goldGradient.createShader(r),
-child: Text('TRIAN MAX', style: T.serif.copyWith(fontSize: 56, fontWeight: FontWeight.w700, color: Colors.white)),
+child: Text('TRIAN MAX', style: T.serif.copyWith(fontSize: Responsive.heroTitleSize(context), fontWeight: FontWeight.w700, color: Colors.white)),
+),
 ),
 const SizedBox(height: 10),
-Text('Todo lo que buscas, en un solo lugar', style: T.serif.copyWith(fontStyle: FontStyle.italic, color: T.muted, fontSize: 15)),
+FittedBox(fit: BoxFit.scaleDown, child: Text('Todo lo que buscas, en un solo lugar', style: T.serif.copyWith(fontStyle: FontStyle.italic, color: T.muted, fontSize: Responsive.isMobile(context) ? 13 : 15))),
 const SizedBox(height: 22),
 Container(width: 70, height: 2, decoration: BoxDecoration(gradient: T.softGradient, borderRadius: BorderRadius.circular(2))),
 ]),
@@ -354,7 +368,10 @@ borderRadius: BorderRadius.circular(99),
 border: Border.all(color: active ? Colors.transparent : T.line),
 ),
 alignment: Alignment.center,
-child: Text(cats[i], style: TextStyle(color: active ? T.onAccent : T.muted, fontWeight: FontWeight.w700, fontSize: 13)),
+child: ConstrainedBox(
+constraints: const BoxConstraints(maxWidth: 180),
+child: Text(cats[i], maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: active ? T.onAccent : T.muted, fontWeight: FontWeight.w700, fontSize: 13)),
+),
 ),
 );
 },
@@ -411,14 +428,14 @@ super.dispose();
 @override
 Widget build(BuildContext context) {
 return Padding(
-padding: const EdgeInsets.fromLTRB(16, 0, 16, 18),
+padding: EdgeInsets.fromLTRB(Responsive.pagePadding(context), 0, Responsive.pagePadding(context), 18),
 child: Center(
 child: ConstrainedBox(
 constraints: const BoxConstraints(maxWidth: 820),
 child: Column(
 children: [
 SizedBox(
-height: 175,
+height: Responsive.isMobile(context) ? 150 : 175,
 child: PageView.builder(
 controller: _ctrl,
 itemCount: widget.products.length,
@@ -445,12 +462,12 @@ children: [
 ClipRRect(
 borderRadius: BorderRadius.circular(12),
 child: SizedBox(
-width: 140,
+width: Responsive.isMobile(context) ? 88 : 140,
 height: double.infinity,
 child: ProductImage(image: p.image, category: p.category),
 ),
 ),
-const SizedBox(width: 16),
+SizedBox(width: Responsive.isMobile(context) ? 10 : 16),
 Expanded(
 child: Column(
 crossAxisAlignment: CrossAxisAlignment.start,
@@ -467,7 +484,7 @@ child: Text(
 'DESTACADO · ${p.category.toUpperCase()}',
 maxLines: 1,
 overflow: TextOverflow.ellipsis,
-style: const TextStyle(color: T.goldLight, fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 1),
+style: TextStyle(color: T.goldLight, fontSize: Responsive.isMobile(context) ? 9 : 10, fontWeight: FontWeight.w700, letterSpacing: Responsive.isMobile(context) ? 0 : 1),
 ),
 ),
 const SizedBox(height: 10),
@@ -475,14 +492,18 @@ Text(
 p.name,
 maxLines: 2,
 overflow: TextOverflow.ellipsis,
-style: const TextStyle(color: T.text, fontSize: 17, fontWeight: FontWeight.w800),
+style: TextStyle(color: T.text, fontSize: Responsive.isMobile(context) ? 14.5 : 17, fontWeight: FontWeight.w800),
 ),
 const SizedBox(height: 8),
-Row(
+FittedBox(
+fit: BoxFit.scaleDown,
+alignment: Alignment.centerLeft,
+child: Row(
+mainAxisSize: MainAxisSize.min,
 children: [
 Text(
 fmt(p.price),
-style: const TextStyle(color: T.goldLight, fontSize: 18, fontWeight: FontWeight.w800),
+style: TextStyle(color: T.goldLight, fontSize: Responsive.isMobile(context) ? 15 : 18, fontWeight: FontWeight.w800),
 ),
 if (p.oldPrice != null && p.oldPrice! > p.price) ...[
 const SizedBox(width: 8),
@@ -490,17 +511,18 @@ Text(
 fmt(p.oldPrice!),
 style: const TextStyle(
 color: T.muted,
-fontSize: 13,
+fontSize: 12,
 decoration: TextDecoration.lineThrough,
 ),
 ),
 ],
 ],
 ),
+),
 ],
 ),
 ),
-const Icon(Icons.chevron_right_rounded, color: T.goldLight, size: 26),
+if (!Responsive.isMobile(context)) const Icon(Icons.chevron_right_rounded, color: T.goldLight, size: 26),
 ],
 ),
 ),

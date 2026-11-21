@@ -33,7 +33,7 @@ class _AdminLoginState extends State<AdminLogin> {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(gradient: RadialGradient(center: Alignment(0, -.6), radius: 1.2, colors: [T.lavenderWash, T.bg])),
-      child: Center(child: ConstrainedBox(
+      child: SingleChildScrollView(child: Center(child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 380),
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -55,7 +55,7 @@ class _AdminLoginState extends State<AdminLogin> {
               decoration: const InputDecoration(hintText: 'Contraseña', prefixIcon: Icon(Icons.lock_outline, color: T.muted)),
             ),
             if (error != null)
-              Padding(padding: const EdgeInsets.only(top: 10), child: Text(error!, style: const TextStyle(color: T.danger, fontSize: 13))),
+              Padding(padding: const EdgeInsets.only(top: 10), child: Text(error!, maxLines: 3, overflow: TextOverflow.ellipsis, style: const TextStyle(color: T.danger, fontSize: 13))),
             const SizedBox(height: 18),
             SizedBox(
               width: double.infinity, height: 48,
@@ -72,7 +72,7 @@ class _AdminLoginState extends State<AdminLogin> {
             ),
           ]),
         ),
-      )),
+      ))),
     );
   }
 }

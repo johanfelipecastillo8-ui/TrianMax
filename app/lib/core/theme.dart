@@ -108,6 +108,8 @@ class T {
         ),
         dialogTheme: DialogThemeData(
           backgroundColor: surface,
+          constraints: const BoxConstraints(maxWidth: 720, maxHeight: 620),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
         ),
       );

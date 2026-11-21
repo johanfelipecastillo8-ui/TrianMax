@@ -1,4 +1,5 @@
 import 'package:material_ui/material_ui.dart';
+import '../core/responsive.dart';
 import '../core/theme.dart';
 import '../core/utils.dart';
 import '../data/models/product.dart';
@@ -20,6 +21,7 @@ class _ProductSheetState extends State<ProductSheet> {
     final p = widget.product;
     final stockLow = p.stock > 0 && p.stock <= 6;
     final stockColor = p.stock == 0 ? T.dangerDeep : (stockLow ? T.peachDeep : T.mintDeep);
+    final imageHeight = (MediaQuery.sizeOf(context).height * 0.32).clamp(200.0, 320.0).toDouble();
 
     return DraggableScrollableSheet(
       initialChildSize: .92,
@@ -38,7 +40,7 @@ class _ProductSheetState extends State<ProductSheet> {
             ClipRRect(
               borderRadius: BorderRadius.circular(18),
               child: SizedBox(
-                height: 320,
+                height: imageHeight,
                 width: double.infinity,
                 child: Hero(
                   tag: 'prod_${p.id}',
@@ -59,11 +61,15 @@ class _ProductSheetState extends State<ProductSheet> {
             ),
           ]),
           const SizedBox(height: 18),
-          Text(p.category.toUpperCase(), style: const TextStyle(color: T.goldDark, fontSize: 11, letterSpacing: 4, fontWeight: FontWeight.w700)),
+          Text(p.category.toUpperCase(), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: T.goldDark, fontSize: 11, letterSpacing: Responsive.isMobile(context) ? 2 : 4, fontWeight: FontWeight.w700)),
           const SizedBox(height: 6),
-          Text(p.name, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w800)),
+          Text(p.name, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: Responsive.isMobile(context) ? 22 : 26, fontWeight: FontWeight.w800)),
           const SizedBox(height: 8),
-          Text(fmt(p.price), style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w800, color: T.goldLight)),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(fmt(p.price), style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w800, color: T.goldLight)),
+          ),
           const SizedBox(height: 14),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
@@ -75,9 +81,13 @@ class _ProductSheetState extends State<ProductSheet> {
             child: Row(children: [
               Icon(Icons.inventory_2_outlined, size: 17, color: stockColor),
               const SizedBox(width: 10),
-              Text(
-                p.stock == 0 ? 'Agotado temporalmente' : stockLow ? '${p.stock} unidades disponibles · ¡Últimas unidades!' : '${p.stock} unidades disponibles',
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5, color: stockColor),
+              Expanded(
+                child: Text(
+                  p.stock == 0 ? 'Agotado temporalmente' : stockLow ? '${p.stock} unidades · ¡Últimas unidades!' : '${p.stock} unidades disponibles',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: stockColor),
+                ),
               ),
             ]),
           ),
@@ -88,15 +98,16 @@ class _ProductSheetState extends State<ProductSheet> {
             Container(
               decoration: BoxDecoration(border: Border.all(color: T.line), borderRadius: BorderRadius.circular(99)),
               child: Row(children: [
-                IconButton(icon: const Icon(Icons.remove, color: T.text), onPressed: qty > 1 ? () => setState(() => qty--) : null),
-                SizedBox(width: 30, child: Center(child: Text('$qty', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16)))),
+                IconButton(icon: const Icon(Icons.remove, color: T.text, size: 18), constraints: const BoxConstraints.tightFor(width: 40, height: 40), onPressed: qty > 1 ? () => setState(() => qty--) : null),
+                SizedBox(width: 24, child: Center(child: Text('$qty', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15)))),
                 IconButton(
-                  icon: const Icon(Icons.add, color: T.text),
+                  icon: const Icon(Icons.add, color: T.text, size: 18),
+                  constraints: const BoxConstraints.tightFor(width: 40, height: 40),
                   onPressed: qty < p.stock ? () => setState(() => qty++) : null,
                 ),
               ]),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 8),
             Expanded(
               child: Container(
                 height: 50,
@@ -104,7 +115,10 @@ class _ProductSheetState extends State<ProductSheet> {
                 child: MaterialButton(
                   onPressed: p.stock == 0 ? null : () => Navigator.of(context).pop(qty),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
-                  child: Text(p.stock == 0 ? 'Agotado' : 'Agregar al carrito', style: TextStyle(color: p.stock == 0 ? T.muted : T.onAccent, fontWeight: FontWeight.w800, fontSize: 15)),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(p.stock == 0 ? 'Agotado' : 'Agregar al carrito', style: TextStyle(color: p.stock == 0 ? T.muted : T.onAccent, fontWeight: FontWeight.w800, fontSize: 14)),
+                  ),
                 ),
               ),
             ),
