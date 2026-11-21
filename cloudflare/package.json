@@ -1,0 +1,5 @@
+{
+  "name": "trianmax-cloudflare-worker",
+  "private": true,
+  "type": "module"
+}

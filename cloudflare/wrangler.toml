@@ -1,0 +1,7 @@
+# Cambia este nombre si ya está ocupado. Será: https://<name>.<tu-subdomain>.workers.dev
+name = "trianmax-catalogo-2026"
+main = "src/index.js"
+compatibility_date = "2026-11-20"
+
+[vars]
+ORIGIN = "https://trianmax.onrender.com"

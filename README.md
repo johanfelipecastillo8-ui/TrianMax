@@ -29,6 +29,11 @@ Esto levanta todo en **http://localhost:3000**:
 >
 > El flag `--wasm` genera WebAssembly (cuando el navegador lo soporta) y mantiene una versión JavaScript de respaldo.
 
+## Publicación y SEO
+
+- Producción: `https://trianmax.onrender.com`
+- Dominio gratuito tipo `*.workers.dev` con proxy, `robots.txt`, `sitemap.xml` y metadatos SEO: ver [`cloudflare/README.md`](cloudflare/README.md).
+
 ## Panel del dueño
 
 - **Productos:** crear, editar (nombre, categoría, precio, precio anterior/oferta, stock, descripción, foto) y eliminar.
