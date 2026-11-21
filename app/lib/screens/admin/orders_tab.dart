@@ -43,8 +43,8 @@ class _AdminOrdersTabState extends State<AdminOrdersTab> {
 
   Color statusColor(String s) => switch (s) {
         'nuevo' => T.goldLight,
-        'confirmado' => const Color(0xFF6FB7F0),
-        'entregado' => const Color(0xFF8FD6A4),
+        'confirmado' => T.skyDeep,
+        'entregado' => T.mintDeep,
         _ => T.muted,
       };
 
@@ -53,7 +53,7 @@ class _AdminOrdersTabState extends State<AdminOrdersTab> {
     if (loading) return const Center(child: CircularProgressIndicator(color: T.gold));
     if (orders.isEmpty) return const Center(child: Text('Aún no hay pedidos registrados.', style: TextStyle(color: T.muted)));
     return RefreshIndicator(
-      color: T.gold,
+      color: T.goldDark,
       backgroundColor: T.surface,
       onRefresh: _load,
       child: ListView.separated(
@@ -65,7 +65,7 @@ class _AdminOrdersTabState extends State<AdminOrdersTab> {
           final sc = statusColor(o.status);
           return Container(
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0x0CFFFFFF))),
+            decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(16), border: Border.all(color: T.line)),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
                 Text('#${o.id}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: T.goldLight)),
@@ -90,7 +90,7 @@ class _AdminOrdersTabState extends State<AdminOrdersTab> {
               const SizedBox(height: 8),
               Text('${o.name} · ${o.phone}', style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13.5)),
               Text('${shipLabels[o.shipMethod]} · Pago: ${o.payment}', style: const TextStyle(color: T.muted, fontSize: 12)),
-              const Divider(height: 18, color: Color(0x10FFFFFF)),
+              const Divider(height: 18, color: T.softLine),
               for (final it in o.items)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 3),
@@ -106,7 +106,7 @@ class _AdminOrdersTabState extends State<AdminOrdersTab> {
                   const Spacer(),
                   Text(fmt(o.shipping), style: const TextStyle(fontSize: 12, color: T.muted)),
                 ]),
-              const Divider(height: 18, color: Color(0x10FFFFFF)),
+              const Divider(height: 18, color: T.softLine),
               Row(children: [
                 const Text('TOTAL', style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1.5, fontSize: 12)),
                 const Spacer(),

@@ -19,7 +19,7 @@ class _ProductSheetState extends State<ProductSheet> {
   Widget build(BuildContext context) {
     final p = widget.product;
     final stockLow = p.stock > 0 && p.stock <= 6;
-    final stockColor = p.stock == 0 ? T.danger : (stockLow ? const Color(0xFFF0B25E) : const Color(0xFF8FD6A4));
+    final stockColor = p.stock == 0 ? T.dangerDeep : (stockLow ? T.peachDeep : T.mintDeep);
 
     return DraggableScrollableSheet(
       initialChildSize: .92,
@@ -32,7 +32,7 @@ class _ProductSheetState extends State<ProductSheet> {
           border: Border(top: BorderSide(color: T.line)),
         ),
         child: ListView(controller: ctrl, padding: const EdgeInsets.fromLTRB(20, 12, 20, 30), children: [
-          Center(child: Container(width: 44, height: 5, decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(99)))),
+          Center(child: Container(width: 44, height: 5, decoration: BoxDecoration(color: const Color(0x333B3450), borderRadius: BorderRadius.circular(99)))),
           const SizedBox(height: 14),
           Stack(children: [
             ClipRRect(
@@ -49,7 +49,7 @@ class _ProductSheetState extends State<ProductSheet> {
             Positioned(
               top: 10, right: 10,
               child: CircleAvatar(
-                backgroundColor: const Color(0xBB0A0A0D),
+                backgroundColor: const Color(0xE6F5EDFA),
                 child: IconButton(
                   icon: const Icon(Icons.close, size: 18),
                   color: T.text,
@@ -59,7 +59,7 @@ class _ProductSheetState extends State<ProductSheet> {
             ),
           ]),
           const SizedBox(height: 18),
-          Text(p.category.toUpperCase(), style: const TextStyle(color: T.gold, fontSize: 11, letterSpacing: 4, fontWeight: FontWeight.w700)),
+          Text(p.category.toUpperCase(), style: const TextStyle(color: T.goldDark, fontSize: 11, letterSpacing: 4, fontWeight: FontWeight.w700)),
           const SizedBox(height: 6),
           Text(p.name, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w800)),
           const SizedBox(height: 8),
@@ -86,7 +86,7 @@ class _ProductSheetState extends State<ProductSheet> {
           const SizedBox(height: 26),
           Row(children: [
             Container(
-              decoration: BoxDecoration(border: Border.all(color: const Color(0x14FFFFFF)), borderRadius: BorderRadius.circular(99)),
+              decoration: BoxDecoration(border: Border.all(color: T.line), borderRadius: BorderRadius.circular(99)),
               child: Row(children: [
                 IconButton(icon: const Icon(Icons.remove, color: T.text), onPressed: qty > 1 ? () => setState(() => qty--) : null),
                 SizedBox(width: 30, child: Center(child: Text('$qty', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16)))),
@@ -100,11 +100,11 @@ class _ProductSheetState extends State<ProductSheet> {
             Expanded(
               child: Container(
                 height: 50,
-                decoration: BoxDecoration(gradient: p.stock == 0 ? null : T.goldGradient, borderRadius: BorderRadius.circular(99), color: p.stock == 0 ? T.surface2 : null),
+                decoration: BoxDecoration(gradient: p.stock == 0 ? null : T.softGradient, borderRadius: BorderRadius.circular(99), color: p.stock == 0 ? T.surface2 : null),
                 child: MaterialButton(
                   onPressed: p.stock == 0 ? null : () => Navigator.of(context).pop(qty),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
-                  child: Text(p.stock == 0 ? 'Agotado' : 'Agregar al carrito', style: TextStyle(color: p.stock == 0 ? T.muted : const Color(0xFF151005), fontWeight: FontWeight.w800, fontSize: 15)),
+                  child: Text(p.stock == 0 ? 'Agotado' : 'Agregar al carrito', style: TextStyle(color: p.stock == 0 ? T.muted : T.onAccent, fontWeight: FontWeight.w800, fontSize: 15)),
                 ),
               ),
             ),

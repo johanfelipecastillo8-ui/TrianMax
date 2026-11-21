@@ -27,7 +27,7 @@ class ProductImage extends StatelessWidget {
         errorBuilder: (_, __, ___) => _placeholder(),
         loadingBuilder: (c, w, p) => p == null
             ? w
-            : Container(color: T.surface, child: const Center(child: CircularProgressIndicator(color: T.gold, strokeWidth: 2))),
+            : Container(color: T.surface, child: const Center(child: CircularProgressIndicator(color: T.goldDark, strokeWidth: 2))),
       );
     }
     return _placeholder();
@@ -41,11 +41,11 @@ class ProductImage extends StatelessWidget {
         gradient: RadialGradient(
           center: Alignment(0, -0.4),
           radius: 1.1,
-          colors: [Color(0xFF242430), Color(0xFF0C0C11)],
+          colors: [Color(0xFFF3E8F7), Color(0xFFFDF8FB)],
         ),
       ),
       child: Center(
-        child: Icon(categoryIcon(category), size: iconSize ?? 72, color: T.gold.withValues(alpha: .85)),
+        child: Icon(categoryIcon(category), size: iconSize ?? 72, color: T.goldDark.withValues(alpha: .85)),
       ),
     );
   }

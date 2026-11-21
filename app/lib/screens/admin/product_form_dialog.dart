@@ -169,7 +169,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                     height: 84,
                     decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: T.line)),
                     child: const Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      Icon(Icons.add_photo_alternate_outlined, color: T.gold, size: 24),
+                      Icon(Icons.add_photo_alternate_outlined, color: T.goldDark, size: 24),
                       SizedBox(height: 5),
                       Text('Agregar', style: TextStyle(color: T.muted, fontSize: 10.5)),
                     ]),
@@ -203,13 +203,13 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
             SizedBox(
               height: 44,
               child: DecoratedBox(
-                decoration: BoxDecoration(gradient: T.goldGradient, borderRadius: BorderRadius.circular(99)),
+                decoration: BoxDecoration(gradient: T.softGradient, borderRadius: BorderRadius.circular(99)),
                 child: MaterialButton(
                   onPressed: saving ? null : _save,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
                   child: saving
-                      ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF151005)))
-                      : const Padding(padding: EdgeInsets.symmetric(horizontal: 18), child: Text('Guardar', style: TextStyle(color: Color(0xFF151005), fontWeight: FontWeight.w800))),
+                      ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: T.onAccent))
+                      : const Padding(padding: EdgeInsets.symmetric(horizontal: 18), child: Text('Guardar', style: TextStyle(color: T.onAccent, fontWeight: FontWeight.w800))),
                 ),
               ),
             ),
@@ -245,8 +245,8 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
             child: Container(
               width: 22,
               height: 22,
-              decoration: const BoxDecoration(color: Color(0xCC0A0A0D), shape: BoxShape.circle),
-              child: const Icon(Icons.close, size: 14, color: Colors.white),
+              decoration: const BoxDecoration(color: Color(0xE6F5EDFA), shape: BoxShape.circle),
+              child: const Icon(Icons.close, size: 14, color: T.onAccent),
             ),
           ),
         ),
@@ -256,7 +256,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
             bottom: 4,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-              decoration: BoxDecoration(color: const Color(0xCC0A0A0D), borderRadius: BorderRadius.circular(6)),
+              decoration: BoxDecoration(color: const Color(0xE6F5EDFA), borderRadius: BorderRadius.circular(6)),
               child: const Text('Principal', style: TextStyle(color: T.goldLight, fontSize: 8.5, fontWeight: FontWeight.w700)),
             ),
           ),

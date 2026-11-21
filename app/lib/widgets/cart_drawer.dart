@@ -88,7 +88,7 @@ class _CartDrawerState extends State<CartDrawer> {
             IconButton(icon: const Icon(Icons.close), color: T.text, onPressed: () => Navigator.of(context).maybePop()),
           ]),
         ),
-        const Divider(height: 1, color: Color(0x10FFFFFF)),
+        const Divider(height: 1, color: T.softLine),
         Expanded(
           child: widget.cart.isEmpty
               ? Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -108,7 +108,7 @@ class _CartDrawerState extends State<CartDrawer> {
                     if (p == null) return const SizedBox.shrink();
                     return Container(
                       padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0x0CFFFFFF))),
+                      decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(16), border: Border.all(color: T.line)),
                       child: Row(children: [
                         ClipRRect(borderRadius: BorderRadius.circular(12), child: SizedBox(width: 60, height: 60, child: ProductImage(image: p.image, category: p.category, iconSize: 26))),
                         const SizedBox(width: 12),
@@ -123,7 +123,7 @@ class _CartDrawerState extends State<CartDrawer> {
                           ),
                         ])),
                         Container(
-                          decoration: BoxDecoration(border: Border.all(color: const Color(0x14FFFFFF)), borderRadius: BorderRadius.circular(99)),
+                          decoration: BoxDecoration(border: Border.all(color: T.line), borderRadius: BorderRadius.circular(99)),
                           child: Row(children: [
                             _miniBtn(Icons.remove, () => widget.onQty(item.id, -1)),
                             Padding(padding: const EdgeInsets.symmetric(horizontal: 4), child: Text('${item.qty}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13))),
@@ -137,7 +137,7 @@ class _CartDrawerState extends State<CartDrawer> {
         ),
         Container(
           padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
-          decoration: const BoxDecoration(border: Border(top: BorderSide(color: Color(0x10FFFFFF)))),
+          decoration: const BoxDecoration(border: Border(top: BorderSide(color: T.softLine))),
           child: SafeArea(
             top: false,
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -182,7 +182,7 @@ class _CartDrawerState extends State<CartDrawer> {
               Container(
                 height: 50,
                 decoration: BoxDecoration(
-                  gradient: widget.cart.isEmpty ? null : const LinearGradient(colors: [Color(0xFF2EE06F), Color(0xFF128C4B)]),
+                  gradient: widget.cart.isEmpty ? null : T.mintGradient,
                   borderRadius: BorderRadius.circular(99),
                   color: widget.cart.isEmpty ? T.surface2 : null,
                 ),
@@ -190,11 +190,11 @@ class _CartDrawerState extends State<CartDrawer> {
                   onPressed: widget.cart.isEmpty || sending ? null : _submit,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
                   child: sending
-                      ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                      ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: T.onAccent))
                       : const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                          Icon(Icons.chat_bubble_outline, size: 18, color: Colors.white),
+                          Icon(Icons.chat_bubble_outline, size: 18, color: T.onAccent),
                           SizedBox(width: 9),
-                          Text('Enviar pedido por WhatsApp', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 15)),
+                          Text('Enviar pedido por WhatsApp', style: TextStyle(color: T.onAccent, fontWeight: FontWeight.w800, fontSize: 15)),
                         ]),
                 ),
               ),
@@ -228,8 +228,8 @@ class _CartDrawerState extends State<CartDrawer> {
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
         decoration: BoxDecoration(
-          color: active ? const Color(0x16D4AF37) : T.surface,
-          border: Border.all(color: active ? T.gold : const Color(0x14FFFFFF), width: active ? 1.5 : 1),
+          color: active ? const Color(0x33C9B6F0) : T.surface,
+          border: Border.all(color: active ? T.gold : T.line, width: active ? 1.5 : 1),
           borderRadius: BorderRadius.circular(13),
         ),
         child: Column(children: [

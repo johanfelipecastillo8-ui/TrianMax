@@ -233,17 +233,17 @@ class _CatalogPageState extends State<CatalogPage> {
                 onPressed: () => Scaffold.of(c).openEndDrawer(),
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-                  decoration: BoxDecoration(gradient: T.goldGradient, borderRadius: BorderRadius.circular(99)),
+                  decoration: BoxDecoration(gradient: T.softGradient, borderRadius: BorderRadius.circular(99)),
                   child: Row(children: [
-                    const Icon(Icons.shopping_cart_outlined, size: 17, color: Color(0xFF151005)),
+                    const Icon(Icons.shopping_cart_outlined, size: 17, color: T.onAccent),
                     const SizedBox(width: 7),
-                    const Text('Carrito', style: TextStyle(color: Color(0xFF151005), fontWeight: FontWeight.w800, fontSize: 13)),
+                    const Text('Carrito', style: TextStyle(color: T.onAccent, fontWeight: FontWeight.w800, fontSize: 13)),
                     if (cartCount > 0) ...[
                       const SizedBox(width: 7),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6),
-                        decoration: BoxDecoration(color: const Color(0xFF151005), borderRadius: BorderRadius.circular(99)),
-                        child: Text('$cartCount', style: const TextStyle(color: T.goldLight, fontWeight: FontWeight.w800, fontSize: 11)),
+                        decoration: BoxDecoration(color: T.blushDeep, borderRadius: BorderRadius.circular(99)),
+                        child: Text('$cartCount', style: const TextStyle(color: T.onAccent, fontWeight: FontWeight.w800, fontSize: 11)),
                       ),
                     ],
                   ]),
@@ -258,7 +258,7 @@ class _CatalogPageState extends State<CatalogPage> {
           : error != null
               ? _ErrorState(message: error!, onRetry: _fetch)
               : RefreshIndicator(
-                  color: T.gold,
+                  color: T.goldDark,
                   backgroundColor: T.surface,
                   onRefresh: _fetch,
                   child: CustomScrollView(slivers: [
@@ -305,7 +305,7 @@ return Container(
 width: double.infinity,
 padding: const EdgeInsets.fromLTRB(20, 48, 20, 28),
 decoration: const BoxDecoration(
-gradient: RadialGradient(center: Alignment(0, -.8), radius: 1.4, colors: [Color(0x22D4AF37), T.bg]),
+gradient: RadialGradient(center: Alignment(0, -.8), radius: 1.4, colors: [Color(0x44C9B6F0), T.bg]),
 ),
 child: Column(children: [
 const Text('CATÁLOGO 2026', style: TextStyle(letterSpacing: 10, fontSize: 12, color: T.muted)),
@@ -317,7 +317,7 @@ child: Text('TRIAN MAX', style: T.serif.copyWith(fontSize: 56, fontWeight: FontW
 const SizedBox(height: 10),
 Text('Todo lo que buscas, en un solo lugar', style: T.serif.copyWith(fontStyle: FontStyle.italic, color: T.muted, fontSize: 15)),
 const SizedBox(height: 22),
-Container(width: 70, height: 2, decoration: BoxDecoration(gradient: T.goldGradient, borderRadius: BorderRadius.circular(2))),
+Container(width: 70, height: 2, decoration: BoxDecoration(gradient: T.softGradient, borderRadius: BorderRadius.circular(2))),
 ]),
 );
 }
@@ -348,13 +348,13 @@ child: AnimatedContainer(
 duration: const Duration(milliseconds: 180),
 padding: const EdgeInsets.symmetric(horizontal: 20),
 decoration: BoxDecoration(
-gradient: active ? T.goldGradient : null,
+gradient: active ? T.softGradient : null,
 color: active ? null : T.surface,
 borderRadius: BorderRadius.circular(99),
-border: Border.all(color: active ? Colors.transparent : const Color(0x14FFFFFF)),
+border: Border.all(color: active ? Colors.transparent : T.line),
 ),
 alignment: Alignment.center,
-child: Text(cats[i], style: TextStyle(color: active ? const Color(0xFF151005) : T.muted, fontWeight: FontWeight.w700, fontSize: 13)),
+child: Text(cats[i], style: TextStyle(color: active ? T.onAccent : T.muted, fontWeight: FontWeight.w700, fontSize: 13)),
 ),
 );
 },
@@ -437,7 +437,7 @@ border: Border.all(color: T.line),
 gradient: const LinearGradient(
 begin: Alignment.topLeft,
 end: Alignment.bottomRight,
-colors: [Color(0x1AD4AF37), T.surface],
+colors: [Color(0x33F6BFD2), T.surface],
 ),
 ),
 child: Row(
@@ -459,7 +459,7 @@ children: [
 Container(
 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
 decoration: BoxDecoration(
-color: const Color(0x22D4AF37),
+color: const Color(0x44C9B6F0),
 borderRadius: BorderRadius.circular(99),
 border: Border.all(color: T.line),
 ),
@@ -482,7 +482,7 @@ Row(
 children: [
 Text(
 fmt(p.price),
-style: const TextStyle(color: T.gold, fontSize: 18, fontWeight: FontWeight.w800),
+style: const TextStyle(color: T.goldLight, fontSize: 18, fontWeight: FontWeight.w800),
 ),
 if (p.oldPrice != null && p.oldPrice! > p.price) ...[
 const SizedBox(width: 8),

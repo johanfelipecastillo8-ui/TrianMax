@@ -44,7 +44,7 @@ class _AdminPageState extends State<AdminPage> {
             child: const Text('TRIAN MAX · Panel', style: TextStyle(fontWeight: FontWeight.w800, color: Colors.white, fontSize: 16)),
           ),
           bottom: const TabBar(
-            indicatorColor: T.gold,
+            indicatorColor: T.goldDark,
             labelColor: T.goldLight,
             unselectedLabelColor: T.muted,
             labelStyle: TextStyle(fontWeight: FontWeight.w700),

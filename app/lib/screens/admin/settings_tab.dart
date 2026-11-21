@@ -55,13 +55,13 @@ class _AdminSettingsTabState extends State<AdminSettingsTab> {
         child: SizedBox(
           height: 44,
           child: DecoratedBox(
-            decoration: BoxDecoration(gradient: T.goldGradient, borderRadius: BorderRadius.circular(99)),
+            decoration: BoxDecoration(gradient: T.softGradient, borderRadius: BorderRadius.circular(99)),
             child: MaterialButton(
               onPressed: saving ? null : _save,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
               child: saving
-                  ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF151005)))
-                  : const Padding(padding: EdgeInsets.symmetric(horizontal: 20), child: Text('Guardar', style: TextStyle(color: Color(0xFF151005), fontWeight: FontWeight.w800))),
+                  ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: T.onAccent))
+                  : const Padding(padding: EdgeInsets.symmetric(horizontal: 20), child: Text('Guardar', style: TextStyle(color: T.onAccent, fontWeight: FontWeight.w800))),
             ),
           ),
         ),

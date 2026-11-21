@@ -47,7 +47,7 @@ class _AdminProductsTabState extends State<AdminProductsTab> {
         content: Text('¿Eliminar "${p.name}"? Esta acción no se puede deshacer.'),
         actions: [
           TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Cancelar')),
-          FilledButton(style: FilledButton.styleFrom(backgroundColor: T.danger), onPressed: () => Navigator.pop(c, true), child: const Text('Eliminar')),
+          FilledButton(style: FilledButton.styleFrom(foregroundColor: T.onAccent, backgroundColor: T.dangerDeep), onPressed: () => Navigator.pop(c, true), child: const Text('Eliminar')),
         ],
       ),
     );
@@ -70,15 +70,15 @@ class _AdminProductsTabState extends State<AdminProductsTab> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _edit(),
         backgroundColor: T.gold,
-        icon: const Icon(Icons.add, color: Color(0xFF151005)),
-        label: const Text('Nuevo producto', style: TextStyle(color: Color(0xFF151005), fontWeight: FontWeight.w800)),
+        icon: const Icon(Icons.add, color: T.onAccent),
+        label: const Text('Nuevo producto', style: TextStyle(color: T.onAccent, fontWeight: FontWeight.w800)),
       ),
       body: loading
           ? const Center(child: CircularProgressIndicator(color: T.gold))
           : products.isEmpty
               ? const Center(child: Text('No hay productos. Crea el primero.', style: TextStyle(color: T.muted)))
               : RefreshIndicator(
-                  color: T.gold,
+                  color: T.goldDark,
                   backgroundColor: T.surface,
                   onRefresh: _load,
                   child: ListView.separated(
@@ -87,10 +87,10 @@ class _AdminProductsTabState extends State<AdminProductsTab> {
                     separatorBuilder: (_, __) => const SizedBox(height: 10),
                     itemBuilder: (_, i) {
                       final p = products[i];
-                      final stockColor = p.stock == 0 ? T.danger : (p.stock <= 6 ? const Color(0xFFF0B25E) : const Color(0xFF8FD6A4));
+                      final stockColor = p.stock == 0 ? T.dangerDeep : (p.stock <= 6 ? T.peachDeep : T.mintDeep);
                       return Container(
                         padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(16), border: Border.all(color: const Color(0x0CFFFFFF))),
+                        decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(16), border: Border.all(color: T.line)),
                         child: Row(children: [
                           ClipRRect(borderRadius: BorderRadius.circular(12), child: SizedBox(width: 62, height: 62, child: ProductImage(image: p.image, category: p.category, iconSize: 26))),
                           const SizedBox(width: 12),
@@ -112,7 +112,7 @@ class _AdminProductsTabState extends State<AdminProductsTab> {
                             ]),
                           ])),
                           IconButton(icon: const Icon(Icons.edit_outlined, size: 19, color: T.goldLight), onPressed: () => _edit(p)),
-                          IconButton(icon: const Icon(Icons.delete_outline, size: 19, color: T.danger), onPressed: () => _delete(p)),
+                          IconButton(icon: const Icon(Icons.delete_outline, size: 19, color: T.dangerDeep), onPressed: () => _delete(p)),
                         ]),
                       );
                     },

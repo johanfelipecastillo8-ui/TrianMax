@@ -32,7 +32,7 @@ class _AdminLoginState extends State<AdminLogin> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(gradient: RadialGradient(center: Alignment(0, -.6), radius: 1.2, colors: [Color(0x22D4AF37), T.bg])),
+      decoration: const BoxDecoration(gradient: RadialGradient(center: Alignment(0, -.6), radius: 1.2, colors: [Color(0x44C9B6F0), T.bg])),
       child: Center(child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 380),
         child: Padding(
@@ -60,13 +60,13 @@ class _AdminLoginState extends State<AdminLogin> {
             SizedBox(
               width: double.infinity, height: 48,
               child: DecoratedBox(
-                decoration: BoxDecoration(gradient: T.goldGradient, borderRadius: BorderRadius.circular(99)),
+                decoration: BoxDecoration(gradient: T.softGradient, borderRadius: BorderRadius.circular(99)),
                 child: MaterialButton(
                   onPressed: loading ? null : _submit,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
                   child: loading
-                      ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF151005)))
-                      : const Text('Ingresar', style: TextStyle(color: Color(0xFF151005), fontWeight: FontWeight.w800, fontSize: 15)),
+                      ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: T.onAccent))
+                      : const Text('Ingresar', style: TextStyle(color: T.onAccent, fontWeight: FontWeight.w800, fontSize: 15)),
                 ),
               ),
             ),
