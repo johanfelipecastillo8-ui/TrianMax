@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import '../../core/theme.dart';
 import '../../core/utils.dart';
@@ -13,19 +15,34 @@ class AdminOrdersTab extends StatefulWidget {
 class _AdminOrdersTabState extends State<AdminOrdersTab> {
   List<Order> orders = [];
   bool loading = true;
+  Timer? _refreshTimer;
 
   @override
   void initState() {
     super.initState();
     _load();
+    // Los pedidos nuevos deben aparecer sin recargar el panel.
+    _refreshTimer = Timer.periodic(const Duration(seconds: 10), (_) {
+      if (mounted) _load(silent: true);
+    });
   }
 
-  Future<void> _load() async {
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _load({bool silent = false}) async {
     try {
       final data = await Api.getOrders();
-      if (mounted) setState(() { orders = data; loading = false; });
+      if (!mounted) return;
+      setState(() {
+        orders = data;
+        if (!silent) loading = false;
+      });
     } on ApiException {
-      if (mounted) setState(() => loading = false);
+      if (mounted && !silent) setState(() => loading = false);
     }
   }
 

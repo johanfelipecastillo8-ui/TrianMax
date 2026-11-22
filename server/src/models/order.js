@@ -1,6 +1,6 @@
 'use strict';
 
-const { db, saveDB } = require('../db');
+const { db, persistDB } = require('../db');
 const { SHIP_METHODS, PAYMENT_METHODS } = require('../config');
 const ProductModel = require('./product');
 
@@ -49,11 +49,9 @@ class OrderModel {
     }
 
     const shipping = SHIP_METHODS[shipMethod];
-    const id = (db.orders.reduce((m, o) => Math.max(m, o.id), 0) || 1000) + 1;
     return {
       errors: [],
       order: {
-        id,
         items: orderItems,
         subtotal,
         shipping,
@@ -70,21 +68,32 @@ class OrderModel {
     };
   }
 
-  static create(order) {
+  static async create(order) {
+    // Revalidamos stock y asignamos el id aquí, de forma síncrona y atómica:
+    // dos peticiones que validaron al mismo tiempo no pueden colisionar.
+    for (const item of order.items) {
+      const product = ProductModel.find(item.id);
+      if (!product || product.stock < item.qty) {
+        const error = new Error(`Stock insuficiente de ${item.name}`);
+        error.code = 'INSUFFICIENT_STOCK';
+        throw error;
+      }
+    }
+    order.id = (db.orders.reduce((m, o) => Math.max(m, o.id), 0) || 1000) + 1;
     for (const item of order.items) {
       const product = ProductModel.find(item.id);
       product.stock -= item.qty;
     }
     db.orders.unshift(order);
-    saveDB();
+    await persistDB();
     return order;
   }
 
-  static setStatus(id, status) {
+  static async setStatus(id, status) {
     const order = OrderModel.find(id);
     if (!order) return null;
     order.status = status;
-    saveDB();
+    await persistDB();
     return order;
   }
 }

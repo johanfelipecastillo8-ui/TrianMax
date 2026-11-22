@@ -49,14 +49,45 @@ for (const product of db.products || []) {
 }
 
 let remoteReady = false;
+let saveQueue = Promise.resolve();
 
-function saveDB() {
+function writeLocal() {
   const tmp = DB_FILE + '.tmp';
   fs.writeFileSync(tmp, JSON.stringify(db, null, 2));
   fs.renameSync(tmp, DB_FILE);
-  if (remoteReady) {
-    saveJson(db).catch(e => console.error('Error al guardar la DB en Cloudinary:', e.message));
-  }
+}
+
+/**
+ * Escribe la DB en disco y encola la copia remota a Cloudinary.
+ * Las copias se ejecutan en serie (cada una con un snapshot propio) para que
+ * una escritura antigua nunca sobrescriba a una reciente. La promesa devuelta
+ * se resuelve cuando la copia terminó realmente, con reintentos, de modo que
+ * el servidor pueda esperarla antes de confirmar un pedido.
+ */
+function persistDB() {
+  writeLocal();
+  if (!remoteReady) return Promise.resolve();
+  const snapshot = JSON.parse(JSON.stringify(db));
+  saveQueue = saveQueue
+    .catch(() => {})
+    .then(async () => {
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          await saveJson(snapshot);
+          return;
+        } catch (e) {
+          if (attempt === 2) throw e;
+          await new Promise(resolve => setTimeout(resolve, 400 * (attempt + 1)));
+        }
+      }
+    })
+    .catch(e => console.error('Error al guardar la DB en Cloudinary:', e.message));
+  return saveQueue;
+}
+
+// Compatibilidad con llamadores síncronos (productos y ajustes).
+function saveDB() {
+  persistDB();
 }
 
 // Render reinicia la instancia y pierde el sistema de archivos: la copia en
@@ -89,4 +120,4 @@ async function initDB() {
   }
 }
 
-module.exports = { db, saveDB, initDB };
+module.exports = { db, saveDB, persistDB, initDB };
