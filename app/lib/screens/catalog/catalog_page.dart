@@ -475,13 +475,16 @@ padding: const EdgeInsets.all(14),
 decoration: BoxDecoration(
 color: T.surface,
 borderRadius: BorderRadius.circular(18),
-border: Border.all(color: T.line),
+border: Border.all(color: T.gold.withValues(alpha: .45)),
 gradient: const LinearGradient(
 begin: Alignment.topLeft,
 end: Alignment.bottomRight,
 colors: [T.blushWash, T.surface],
 ),
-boxShadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 16, offset: Offset(0, 5))],
+boxShadow: const [
+BoxShadow(color: Color(0x1F000000), blurRadius: 20, offset: Offset(0, 7)),
+BoxShadow(color: Color(0x18D4AF37), blurRadius: 22),
+],
 ),
 child: Row(
 children: [

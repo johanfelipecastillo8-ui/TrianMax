@@ -68,8 +68,11 @@ class _AdminOrdersTabState extends State<AdminOrdersTab> {
             decoration: BoxDecoration(
               color: T.surface,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: T.line),
-              boxShadow: const [BoxShadow(color: Color(0x12000000), blurRadius: 12, offset: Offset(0, 4))],
+              border: Border.all(color: T.gold.withValues(alpha: .35)),
+              boxShadow: const [
+                BoxShadow(color: Color(0x1A000000), blurRadius: 16, offset: Offset(0, 5)),
+                BoxShadow(color: Color(0x12D4AF37), blurRadius: 18),
+              ],
             ),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [

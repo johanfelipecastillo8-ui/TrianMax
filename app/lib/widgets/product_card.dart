@@ -32,17 +32,27 @@ class _ProductCardState extends State<ProductCard> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         curve: Curves.easeOutCubic,
-        transform: Matrix4.translationValues(0, _hover ? -3 : 0, 0),
+        transform: Matrix4.identity()
+          ..translateByDouble(0.0, _hover ? -4.0 : 0.0, 0.0, 1.0)
+          ..scaleByDouble(_hover ? 1.015 : 1.0, _hover ? 1.015 : 1.0, 1.0, 1.0),
+        transformAlignment: Alignment.center,
         decoration: BoxDecoration(
           gradient: const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [T.surface2, T.surface]),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: _hover ? T.gold : T.line, width: _hover ? 1.4 : 1),
+          border: Border.all(color: _hover ? T.gold : T.gold.withValues(alpha: .45), width: _hover ? 2 : 1.2),
           boxShadow: _hover
-              ? [BoxShadow(color: T.gold.withValues(alpha: .22), blurRadius: 18, spreadRadius: 1, offset: const Offset(0, 6))]
-              : const [BoxShadow(color: Color(0x12000000), blurRadius: 12, offset: Offset(0, 4))],
+              ? [
+                  const BoxShadow(color: Color(0x26000000), blurRadius: 24, offset: Offset(0, 10)),
+                  BoxShadow(color: T.gold.withValues(alpha: .35), blurRadius: 28, spreadRadius: 2),
+                ]
+              : const [
+                  BoxShadow(color: Color(0x1A000000), blurRadius: 16, offset: Offset(0, 5)),
+                  BoxShadow(color: Color(0x14D4AF37), blurRadius: 20),
+                ],
         ),
         clipBehavior: Clip.antiAlias,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const SizedBox(height: 3, child: DecoratedBox(decoration: BoxDecoration(gradient: T.goldGradient))),
         Expanded(
           flex: 8,
           child: GestureDetector(
