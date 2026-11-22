@@ -39,7 +39,7 @@ class _ProductCardState extends State<ProductCard> {
           border: Border.all(color: _hover ? T.gold : T.line, width: _hover ? 1.4 : 1),
           boxShadow: _hover
               ? [BoxShadow(color: T.gold.withValues(alpha: .22), blurRadius: 18, spreadRadius: 1, offset: const Offset(0, 6))]
-              : const [],
+              : const [BoxShadow(color: Color(0x12000000), blurRadius: 12, offset: Offset(0, 4))],
         ),
         clipBehavior: Clip.antiAlias,
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

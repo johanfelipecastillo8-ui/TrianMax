@@ -115,7 +115,12 @@ class _CartDrawerState extends State<CartDrawer> {
                     if (p == null) return const SizedBox.shrink();
                     return Container(
                       padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(16), border: Border.all(color: T.line)),
+                      decoration: BoxDecoration(
+                        color: T.surface,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: T.line),
+                        boxShadow: const [BoxShadow(color: Color(0x12000000), blurRadius: 12, offset: Offset(0, 4))],
+                      ),
                       child: Row(children: [
                         ClipRRect(borderRadius: BorderRadius.circular(10), child: SizedBox(width: 50, height: 50, child: ProductImage(image: p.image, category: p.category, iconSize: 22))),
                         const SizedBox(width: 8),

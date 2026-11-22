@@ -168,7 +168,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
                   child: Container(
                     width: 84,
                     height: 84,
-                    decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: T.line)),
+                    decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: T.line), boxShadow: const [BoxShadow(color: Color(0x0F000000), blurRadius: 10, offset: Offset(0, 3))]),
                     child: const Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                       Icon(Icons.add_photo_alternate_outlined, color: T.goldDark, size: 24),
                       SizedBox(height: 5),
@@ -234,7 +234,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
         Container(
           width: 84,
           height: 84,
-          decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: T.line)),
+          decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(12), border: Border.all(color: T.line), boxShadow: const [BoxShadow(color: Color(0x0F000000), blurRadius: 10, offset: Offset(0, 3))]),
           clipBehavior: Clip.antiAlias,
           child: image,
         ),

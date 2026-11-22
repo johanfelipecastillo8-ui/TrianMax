@@ -65,7 +65,12 @@ class _AdminOrdersTabState extends State<AdminOrdersTab> {
           final sc = statusColor(o.status);
           return Container(
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(16), border: Border.all(color: T.line)),
+            decoration: BoxDecoration(
+              color: T.surface,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: T.line),
+              boxShadow: const [BoxShadow(color: Color(0x12000000), blurRadius: 12, offset: Offset(0, 4))],
+            ),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
                 Text('#${o.id}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: T.text)),

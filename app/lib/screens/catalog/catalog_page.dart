@@ -481,6 +481,7 @@ begin: Alignment.topLeft,
 end: Alignment.bottomRight,
 colors: [T.blushWash, T.surface],
 ),
+boxShadow: const [BoxShadow(color: Color(0x14000000), blurRadius: 16, offset: Offset(0, 5))],
 ),
 child: Row(
 children: [
