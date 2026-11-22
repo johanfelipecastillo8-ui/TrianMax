@@ -34,19 +34,63 @@ class ProductImage extends StatelessWidget {
   }
 
   Widget _placeholder() {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: const BoxDecoration(
-        gradient: RadialGradient(
-          center: Alignment(0, -0.4),
-          radius: 1.1,
-          colors: [T.beige, T.bg],
-        ),
-      ),
-      child: Center(
-        child: Icon(categoryIcon(category), size: iconSize ?? 72, color: T.goldDark.withValues(alpha: .85)),
-      ),
+    return _ShimmerPlaceholder(category: category, iconSize: iconSize);
+  }
+}
+
+class _ShimmerPlaceholder extends StatefulWidget {
+  final String category;
+  final double? iconSize;
+  const _ShimmerPlaceholder({required this.category, this.iconSize});
+
+  @override
+  State<_ShimmerPlaceholder> createState() => _ShimmerPlaceholderState();
+}
+
+class _ShimmerPlaceholderState extends State<_ShimmerPlaceholder>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) {
+        final shift = (_controller.value * 2 - 1) * 0.8;
+        return Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment(shift - 0.6, -0.3),
+              end: Alignment(shift + 0.6, 0.3),
+              colors: const [T.beige, T.surface, T.beige],
+            ),
+          ),
+          child: Center(
+            child: Icon(
+              categoryIcon(widget.category),
+              size: widget.iconSize ?? 72,
+              color: T.goldDark.withValues(alpha: .85),
+            ),
+          ),
+        );
+      },
     );
   }
 }

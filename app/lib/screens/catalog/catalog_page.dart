@@ -306,7 +306,18 @@ const SliverToBoxAdapter(child: AppFooter()),
 );
 }
 Widget _hero() {
-return Container(
+return TweenAnimationBuilder<double>(
+tween: Tween(begin: 0, end: 1),
+duration: const Duration(milliseconds: 700),
+curve: Curves.easeOutCubic,
+builder: (context, value, child) => Opacity(
+opacity: value,
+child: Transform.translate(
+offset: Offset(0, (1 - value) * 14),
+child: child,
+),
+),
+child: Container(
 width: double.infinity,
 padding: EdgeInsets.fromLTRB(
     Responsive.pagePadding(context),
@@ -327,8 +338,18 @@ child: Text('TRIAN MAX', style: T.serif.copyWith(fontSize: Responsive.heroTitleS
 const SizedBox(height: 10),
 FittedBox(fit: BoxFit.scaleDown, child: Text('Todo lo que buscas, en un solo lugar', style: T.serif.copyWith(fontStyle: FontStyle.italic, color: T.muted, fontSize: Responsive.isMobile(context) ? 13 : 15))),
 const SizedBox(height: 22),
-Container(width: 70, height: 2, decoration: BoxDecoration(gradient: T.softGradient, borderRadius: BorderRadius.circular(2))),
+TweenAnimationBuilder<double>(
+tween: Tween(begin: 0, end: 70),
+duration: const Duration(milliseconds: 850),
+curve: Curves.easeOutCubic,
+builder: (context, width, _) => Container(
+width: width,
+height: 2,
+decoration: BoxDecoration(gradient: T.softGradient, borderRadius: BorderRadius.circular(2)),
+),
+),
 ]),
+),
 );
 }
 Widget _toolbar(List cats) {
@@ -352,21 +373,29 @@ itemCount: cats.length,
 separatorBuilder: (_, __) => const SizedBox(width: 10),
 itemBuilder: (_, i) {
 final active = cats[i] == activeCat;
-return GestureDetector(
+return Material(
+color: Colors.transparent,
+child: InkWell(
+borderRadius: BorderRadius.circular(99),
+splashColor: T.gold.withValues(alpha: .20),
+highlightColor: T.gold.withValues(alpha: .10),
 onTap: () => setState(() => activeCat = cats[i]),
 child: AnimatedContainer(
 duration: const Duration(milliseconds: 180),
+curve: Curves.easeOutCubic,
 padding: const EdgeInsets.symmetric(horizontal: 20),
 decoration: BoxDecoration(
 gradient: active ? T.softGradient : null,
 color: active ? null : T.surface,
 borderRadius: BorderRadius.circular(99),
 border: Border.all(color: active ? Colors.transparent : T.line),
+boxShadow: active ? [BoxShadow(color: T.gold.withValues(alpha: .18), blurRadius: 12, offset: const Offset(0, 3))] : null,
 ),
 alignment: Alignment.center,
 child: ConstrainedBox(
 constraints: const BoxConstraints(maxWidth: 180),
 child: Text(cats[i], maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: active ? T.onAccent : T.muted, fontWeight: FontWeight.w700, fontSize: 13)),
+),
 ),
 ),
 );
@@ -540,6 +569,7 @@ height: 7,
 decoration: BoxDecoration(
 color: active ? T.gold : T.line,
 borderRadius: BorderRadius.circular(99),
+boxShadow: active ? [BoxShadow(color: T.gold.withValues(alpha: .45), blurRadius: 8, spreadRadius: 1)] : null,
 ),
 );
 }),

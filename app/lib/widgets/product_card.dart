@@ -5,26 +5,44 @@ import '../core/utils.dart';
 import '../data/models/product.dart';
 import 'product_image_carousel.dart';
 
-class ProductCard extends StatelessWidget {
+class ProductCard extends StatefulWidget {
   final Product product;
   final VoidCallback onView;
   final VoidCallback onAdd;
   const ProductCard({super.key, required this.product, required this.onView, required this.onAdd});
 
   @override
+  State<ProductCard> createState() => _ProductCardState();
+}
+
+class _ProductCardState extends State<ProductCard> {
+  bool _hover = false;
+
+  @override
   Widget build(BuildContext context) {
-    final p = product;
+    final p = widget.product;
+    final onView = widget.onView;
+    final onAdd = widget.onAdd;
     final stockLow = p.stock > 0 && p.stock <= 6;
     final stockColor = p.stock == 0 ? T.dangerDeep : (stockLow ? T.peachDeep : T.mintDeep);
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [T.surface2, T.surface]),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: T.line),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hover = true),
+      onExit: (_) => setState(() => _hover = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOutCubic,
+        transform: Matrix4.translationValues(0, _hover ? -3 : 0, 0),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [T.surface2, T.surface]),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: _hover ? T.gold : T.line, width: _hover ? 1.4 : 1),
+          boxShadow: _hover
+              ? [BoxShadow(color: T.gold.withValues(alpha: .22), blurRadius: 18, spreadRadius: 1, offset: const Offset(0, 6))]
+              : const [],
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Expanded(
           flex: 8,
           child: GestureDetector(
@@ -99,7 +117,8 @@ class ProductCard extends StatelessWidget {
             ]),
           ),
         ),
-      ]),
+        ]),
+      ),
     );
   }
 }
