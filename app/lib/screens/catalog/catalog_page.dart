@@ -223,10 +223,7 @@ class _CatalogPageState extends State<CatalogPage> {
           ),
           const SizedBox(width: 8),
           Flexible(
-            child: ShaderMask(
-              shaderCallback: (r) => T.goldGradient.createShader(r),
-              child: Text('TRIAN MAX', overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: Responsive.isMobile(context) ? 1 : 2, color: Colors.white, fontSize: Responsive.isMobile(context) ? 13 : 15)),
-            ),
+            child: Text('TRIAN MAX', overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: Responsive.isMobile(context) ? 1 : 2, color: T.text, fontSize: Responsive.isMobile(context) ? 13 : 15)),
           ),
         ]),
         actions: [
@@ -325,10 +322,7 @@ Text('CATÁLOGO 2026', style: TextStyle(letterSpacing: Responsive.isMobile(conte
 const SizedBox(height: 14),
 FittedBox(
 fit: BoxFit.scaleDown,
-child: ShaderMask(
-shaderCallback: (r) => T.goldGradient.createShader(r),
-child: Text('TRIAN MAX', style: T.serif.copyWith(fontSize: Responsive.heroTitleSize(context), fontWeight: FontWeight.w700, color: Colors.white)),
-),
+child: Text('TRIAN MAX', style: T.serif.copyWith(fontSize: Responsive.heroTitleSize(context), fontWeight: FontWeight.w700, color: T.text)),
 ),
 const SizedBox(height: 10),
 FittedBox(fit: BoxFit.scaleDown, child: Text('Todo lo que buscas, en un solo lugar', style: T.serif.copyWith(fontStyle: FontStyle.italic, color: T.muted, fontSize: Responsive.isMobile(context) ? 13 : 15))),
@@ -486,7 +480,7 @@ child: Text(
 'DESTACADO · ${p.category.toUpperCase()}',
 maxLines: 1,
 overflow: TextOverflow.ellipsis,
-style: TextStyle(color: T.goldLight, fontSize: Responsive.isMobile(context) ? 9 : 10, fontWeight: FontWeight.w700, letterSpacing: Responsive.isMobile(context) ? 0 : 1),
+style: TextStyle(color: T.text, fontSize: Responsive.isMobile(context) ? 9 : 10, fontWeight: FontWeight.w700, letterSpacing: Responsive.isMobile(context) ? 0 : 1),
 ),
 ),
 const SizedBox(height: 10),
@@ -505,7 +499,7 @@ mainAxisSize: MainAxisSize.min,
 children: [
 Text(
 fmt(p.price),
-style: TextStyle(color: T.goldLight, fontSize: Responsive.isMobile(context) ? 15 : 18, fontWeight: FontWeight.w800),
+style: TextStyle(color: T.text, fontSize: Responsive.isMobile(context) ? 15 : 18, fontWeight: FontWeight.w800),
 ),
 if (p.oldPrice != null && p.oldPrice! > p.price) ...[
 const SizedBox(width: 8),

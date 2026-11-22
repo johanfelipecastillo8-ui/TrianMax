@@ -1,60 +1,60 @@
 import 'package:material_ui/material_ui.dart';
 
 class T {
-  // Paleta sobria con beige como color principal: arena, taupe, grafito y oliva.
-  static const bg = Color(0xFFF5F0E8);
+  // Paleta blanca con detalles dorados y tipografía negra.
+  static const bg = Color(0xFFFFFFFF);
   static const surface = Color(0xFFFFFFFF);
-  static const surface2 = Color(0xFFF0E7DA);
-  static const ink = Color(0xFF2E2A26);
+  static const surface2 = Color(0xFFF7F7F7);
+  static const ink = Color(0xFF000000);
   static const text = ink;
-  static const muted = Color(0xFF6E655A);
+  static const muted = Color(0xFF333333);
   static const onAccent = ink;
 
-  // Beige principal y sus variaciones.
-  static const beige = Color(0xFFD8C4A8);
-  static const beigeDeep = Color(0xFFA88764);
-  static const beigeInk = Color(0xFF6E563D);
-  static const taupe = Color(0xFF8A735C);
-  static const slate = Color(0xFF5A6470);
-  static const olive = Color(0xFF5F7A63);
-  static const ochre = Color(0xFFA9784F);
+  // Dorados para bordes, iconos, badges y acentos.
+  static const beige = Color(0xFFF7E9C6);
+  static const beigeDeep = Color(0xFFB8860B);
+  static const beigeInk = Color(0xFF8A6A12);
+  static const taupe = Color(0xFF7A6A4F);
+  static const slate = Color(0xFF4A4A4A);
+  static const olive = Color(0xFF4F7A4F);
+  static const ochre = Color(0xFFB8860B);
 
   // Nombres anteriores conservados para no romper el resto de la app.
-  static const lavender = Color(0xFFE3D6C4);
+  static const lavender = Color(0xFFF5E7C3);
   static const lavenderDeep = beigeDeep;
-  static const blush = Color(0xFFE6D5C6);
-  static const blushDeep = Color(0xFFA07F66);
-  static const peach = Color(0xFFEAD8C0);
+  static const blush = Color(0xFFF8EBCF);
+  static const blushDeep = Color(0xFFD4AF37);
+  static const peach = Color(0xFFF6E7C8);
   static const peachDeep = ochre;
-  static const mint = Color(0xFFD8E0D2);
+  static const mint = Color(0xFFE9F0E8);
   static const mintDeep = olive;
-  static const sky = Color(0xFFDCE0E4);
+  static const sky = Color(0xFFECECEC);
   static const skyDeep = slate;
-  static const butter = Color(0xFFEAD9B8);
+  static const butter = Color(0xFFF7E7B0);
 
   // Lavados suaves para fondos, badges y estados.
-  static const lavenderWash = Color(0x33E3D6C4);
-  static const blushWash = Color(0x33E6D5C6);
-  static const peachWash = Color(0x33EAD8C0);
-  static const mintWash = Color(0x33D8E0D2);
+  static const lavenderWash = Color(0x33F5E7C3);
+  static const blushWash = Color(0x33F8EBCF);
+  static const peachWash = Color(0x33F6E7C8);
+  static const mintWash = Color(0x33E9F0E8);
 
-  static const gold = beigeDeep;
-  static const goldLight = beigeInk;
-  static const goldDark = Color(0xFF7A5F43);
+  static const gold = Color(0xFFD4AF37);
+  static const goldLight = Color(0xFFA8801F);
+  static const goldDark = Color(0xFF8A6A12);
   static const green = olive;
-  static const danger = Color(0xFFBD6F66);
-  static const dangerDeep = Color(0xFF9C4F47);
-  static const line = Color(0x403A332B);
-  static const softLine = Color(0x262E2A26);
+  static const danger = Color(0xFFC0392B);
+  static const dangerDeep = Color(0xFF96281B);
+  static const line = Color(0x33333333);
+  static const softLine = Color(0x1A000000);
 
-  // Gradiente profundo para logotipos sobre fondos claros.
+  // Gradiente dorado para detalles decorativos.
   static const goldGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [blushDeep, lavenderDeep, peachDeep],
+    colors: [beigeDeep, gold, goldLight],
   );
 
-  // Gradiente beige suave para botones, badges y fondos.
+  // Gradiente dorado suave para botones, badges y fondos.
   static const softGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -62,7 +62,7 @@ class T {
   );
 
   static const mintGradient = LinearGradient(
-    colors: [mint, Color(0xFFC7D2C0)],
+    colors: [mint, Color(0xFFDCE8DA)],
   );
 
   static ThemeData get theme => ThemeData(

@@ -125,7 +125,7 @@ class _CartDrawerState extends State<CartDrawer> {
                           FittedBox(
                             fit: BoxFit.scaleDown,
                             alignment: Alignment.centerLeft,
-                            child: Text(fmt(p.price), style: const TextStyle(color: T.goldLight, fontWeight: FontWeight.w700, fontSize: 12.5)),
+                            child: Text(fmt(p.price), style: const TextStyle(color: T.text, fontWeight: FontWeight.w700, fontSize: 12.5)),
                           ),
                           TextButton(
                             style: TextButton.styleFrom(foregroundColor: T.muted, padding: EdgeInsets.zero, minimumSize: const Size(0, 20), textStyle: const TextStyle(fontSize: 10.5, decoration: TextDecoration.underline)),
@@ -157,7 +157,7 @@ class _CartDrawerState extends State<CartDrawer> {
                 const Text('Total', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800)),
                 FittedBox(
                   fit: BoxFit.scaleDown,
-                  child: Text(fmt(total), style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w800, color: T.goldLight)),
+                  child: Text(fmt(total), style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w800, color: T.text)),
                 ),
               ]),
               if (widget.cart.isNotEmpty)
@@ -222,7 +222,7 @@ class _CartDrawerState extends State<CartDrawer> {
               const SizedBox(height: 10),
               OutlinedButton(
                 onPressed: widget.onAskInfo,
-                style: OutlinedButton.styleFrom(foregroundColor: T.goldLight, side: const BorderSide(color: T.line), padding: const EdgeInsets.symmetric(vertical: 11), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99))),
+                style: OutlinedButton.styleFrom(foregroundColor: T.text, side: const BorderSide(color: T.line), padding: const EdgeInsets.symmetric(vertical: 11), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99))),
                 child: const Text('Solo pedir información', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5)),
               ),
               ]),
@@ -255,8 +255,8 @@ class _CartDrawerState extends State<CartDrawer> {
           borderRadius: BorderRadius.circular(13),
         ),
         child: Column(children: [
-          Text(label, textAlign: TextAlign.center, style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: active ? T.goldLight : T.muted)),
-          Text(cost == 0 ? 'Gratis' : '+${fmt(cost)}', style: TextStyle(fontSize: 9.5, color: active ? T.goldLight.withValues(alpha: .8) : T.muted.withValues(alpha: .8))),
+          Text(label, textAlign: TextAlign.center, style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: active ? T.text : T.muted)),
+          Text(cost == 0 ? 'Gratis' : '+${fmt(cost)}', style: TextStyle(fontSize: 9.5, color: active ? T.text.withValues(alpha: .75) : T.muted.withValues(alpha: .8))),
         ]),
       ),
     );

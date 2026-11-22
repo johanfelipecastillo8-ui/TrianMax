@@ -51,7 +51,7 @@ class _ProductSheetState extends State<ProductSheet> {
             Positioned(
               top: 10, right: 10,
               child: CircleAvatar(
-                backgroundColor: const Color(0xF2F5F0E8),
+                backgroundColor: T.surface.withValues(alpha: .95),
                 child: IconButton(
                   icon: const Icon(Icons.close, size: 18),
                   color: T.text,
@@ -61,14 +61,14 @@ class _ProductSheetState extends State<ProductSheet> {
             ),
           ]),
           const SizedBox(height: 18),
-          Text(p.category.toUpperCase(), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: T.goldDark, fontSize: 11, letterSpacing: Responsive.isMobile(context) ? 2 : 4, fontWeight: FontWeight.w700)),
+          Text(p.category.toUpperCase(), maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(color: T.muted, fontSize: 11, letterSpacing: Responsive.isMobile(context) ? 2 : 4, fontWeight: FontWeight.w700)),
           const SizedBox(height: 6),
           Text(p.name, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: Responsive.isMobile(context) ? 22 : 26, fontWeight: FontWeight.w800)),
           const SizedBox(height: 8),
           FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
-            child: Text(fmt(p.price), style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w800, color: T.goldLight)),
+            child: Text(fmt(p.price), style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w800, color: T.text)),
           ),
           const SizedBox(height: 14),
           Container(

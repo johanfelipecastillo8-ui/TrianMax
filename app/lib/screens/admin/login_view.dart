@@ -40,10 +40,7 @@ class _AdminLoginState extends State<AdminLogin> {
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             ClipRRect(borderRadius: BorderRadius.circular(16), child: Image.asset('assets/logo-trianmax.jpg', width: 74, height: 74)),
             const SizedBox(height: 16),
-            ShaderMask(
-              shaderCallback: (r) => T.goldGradient.createShader(r),
-              child: Text('TRIAN MAX', style: T.serif.copyWith(fontSize: 32, fontWeight: FontWeight.w700, color: Colors.white)),
-            ),
+            Text('TRIAN MAX', style: T.serif.copyWith(fontSize: 32, fontWeight: FontWeight.w700, color: T.text)),
             const SizedBox(height: 6),
             const Text('Panel del dueño', style: TextStyle(color: T.muted)),
             const SizedBox(height: 28),

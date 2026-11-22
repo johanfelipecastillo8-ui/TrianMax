@@ -246,7 +246,7 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
             child: Container(
               width: 22,
               height: 22,
-              decoration: const BoxDecoration(color: Color(0xF2F5F0E8), shape: BoxShape.circle),
+              decoration: BoxDecoration(color: T.surface.withValues(alpha: .95), shape: BoxShape.circle),
               child: const Icon(Icons.close, size: 14, color: T.onAccent),
             ),
           ),
@@ -257,8 +257,8 @@ class _ProductFormDialogState extends State<ProductFormDialog> {
             bottom: 4,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-              decoration: BoxDecoration(color: const Color(0xF2F5F0E8), borderRadius: BorderRadius.circular(6)),
-              child: const Text('Principal', style: TextStyle(color: T.goldLight, fontSize: 8.5, fontWeight: FontWeight.w700)),
+              decoration: BoxDecoration(color: T.surface.withValues(alpha: .95), borderRadius: BorderRadius.circular(6)),
+              child: const Text('Principal', style: TextStyle(color: T.text, fontSize: 8.5, fontWeight: FontWeight.w700)),
             ),
           ),
       ],

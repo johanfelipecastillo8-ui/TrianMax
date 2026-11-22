@@ -68,7 +68,7 @@ class _AdminOrdersTabState extends State<AdminOrdersTab> {
             decoration: BoxDecoration(color: T.surface, borderRadius: BorderRadius.circular(16), border: Border.all(color: T.line)),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
-                Text('#${o.id}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: T.goldLight)),
+                Text('#${o.id}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: T.text)),
                 const SizedBox(width: 10),
                 Flexible(child: Text(fmtDate(o.createdAt), maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: T.muted, fontSize: 11.5))),
                 const Spacer(),
@@ -112,7 +112,7 @@ class _AdminOrdersTabState extends State<AdminOrdersTab> {
               Row(children: [
                 const Text('TOTAL', style: TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1.5, fontSize: 12)),
                 const Spacer(),
-                FittedBox(fit: BoxFit.scaleDown, child: Text(fmt(o.total), style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: T.goldLight))),
+                FittedBox(fit: BoxFit.scaleDown, child: Text(fmt(o.total), style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: T.text))),
               ]),
               if (o.note.isNotEmpty)
                 Padding(padding: const EdgeInsets.only(top: 8), child: Text('Nota: ${o.note}', maxLines: 3, overflow: TextOverflow.ellipsis, style: const TextStyle(color: T.muted, fontSize: 12, fontStyle: FontStyle.italic))),

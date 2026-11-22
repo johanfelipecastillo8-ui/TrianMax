@@ -51,7 +51,7 @@ class ProductCard extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(p.category.toUpperCase(), maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: T.goldDark, fontSize: 9, letterSpacing: 2, fontWeight: FontWeight.w700)),
+              Text(p.category.toUpperCase(), maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: T.muted, fontSize: 9, letterSpacing: 2, fontWeight: FontWeight.w700)),
               const SizedBox(height: 4),
               Text(p.name, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.w800, fontSize: Responsive.isMobile(context) ? 13.5 : 15.5, height: 1.15)),
               const SizedBox(height: 4),
@@ -61,7 +61,7 @@ class ProductCard extends StatelessWidget {
                 fit: BoxFit.scaleDown,
                 alignment: Alignment.centerLeft,
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Text(fmt(p.price), style: TextStyle(color: T.goldLight, fontWeight: FontWeight.w800, fontSize: Responsive.isMobile(context) ? 15 : 18)),
+                  Text(fmt(p.price), style: TextStyle(color: T.text, fontWeight: FontWeight.w800, fontSize: Responsive.isMobile(context) ? 15 : 18)),
                   if (p.oldPrice != null) ...[
                     const SizedBox(width: 8),
                     Text(fmt(p.oldPrice!), style: const TextStyle(color: T.muted, fontSize: 11, decoration: TextDecoration.lineThrough)),
@@ -86,7 +86,7 @@ class ProductCard extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: p.stock == 0 ? null : onAdd,
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: T.goldLight,
+                    foregroundColor: T.text,
                     side: const BorderSide(color: T.line),
                     backgroundColor: T.lavenderWash,
                     padding: const EdgeInsets.symmetric(vertical: 8),

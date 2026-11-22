@@ -43,14 +43,11 @@ class _AdminPageState extends State<AdminPage> {
           titleSpacing: Responsive.isMobile(context) ? 4 : 16,
           title: FittedBox(
             fit: BoxFit.scaleDown,
-            child: ShaderMask(
-              shaderCallback: (r) => T.goldGradient.createShader(r),
-              child: Text('TRIAN MAX${Responsive.isMobile(context) ? '' : ' · Panel'}', style: TextStyle(fontWeight: FontWeight.w800, color: Colors.white, fontSize: Responsive.isMobile(context) ? 13 : 16)),
-            ),
+            child: Text('TRIAN MAX${Responsive.isMobile(context) ? '' : ' · Panel'}', style: TextStyle(fontWeight: FontWeight.w800, color: T.text, fontSize: Responsive.isMobile(context) ? 13 : 16)),
           ),
           bottom: const TabBar(
             indicatorColor: T.goldDark,
-            labelColor: T.goldLight,
+            labelColor: T.text,
             unselectedLabelColor: T.muted,
             labelStyle: TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5),
             labelPadding: EdgeInsets.symmetric(horizontal: 14),

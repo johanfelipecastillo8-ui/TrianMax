@@ -100,7 +100,7 @@ class _AdminProductsTabState extends State<AdminProductsTab> {
                             Text(p.category, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(color: T.muted, fontSize: 11.5)),
                             const SizedBox(height: 3),
                             Row(children: [
-                              FittedBox(fit: BoxFit.scaleDown, child: Text(fmt(p.price), style: const TextStyle(color: T.goldLight, fontWeight: FontWeight.w800, fontSize: 13.5))),
+                              FittedBox(fit: BoxFit.scaleDown, child: Text(fmt(p.price), style: const TextStyle(color: T.text, fontWeight: FontWeight.w800, fontSize: 13.5))),
                               const SizedBox(width: 6),
                               Flexible(
                                 child: Container(
