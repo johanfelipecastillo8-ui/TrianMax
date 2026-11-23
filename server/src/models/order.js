@@ -1,6 +1,7 @@
 'use strict';
 
 const { db, persistDB } = require('../db');
+const { saveOrder } = require('../cloudinary');
 const { SHIP_METHODS, PAYMENT_METHODS } = require('../config');
 const ProductModel = require('./product');
 
@@ -79,13 +80,19 @@ class OrderModel {
         throw error;
       }
     }
-    order.id = (db.orders.reduce((m, o) => Math.max(m, o.id), 0) || 1000) + 1;
+    const maxId = db.orders.reduce((m, o) => Math.max(m, Number(o.id) || 0), 1000);
+    order.id = maxId + 1;
     for (const item of order.items) {
       const product = ProductModel.find(item.id);
       product.stock -= item.qty;
     }
     db.orders.unshift(order);
-    await persistDB();
+    // Doble escritura: base principal + respaldo propio del pedido.
+    await Promise.all([
+      persistDB(),
+      // Si el respaldo falla, el pedido igual queda en la base principal.
+      saveOrder(order).catch(e => console.error('Error al respaldar el pedido:', e.message)),
+    ]);
     return order;
   }
 
@@ -93,7 +100,11 @@ class OrderModel {
     const order = OrderModel.find(id);
     if (!order) return null;
     order.status = status;
-    await persistDB();
+    await Promise.all([
+      persistDB(),
+      // Si el respaldo falla, el pedido igual queda en la base principal.
+      saveOrder(order).catch(e => console.error('Error al respaldar el pedido:', e.message)),
+    ]);
     return order;
   }
 }

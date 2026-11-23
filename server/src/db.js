@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const { DATA_DIR, DB_FILE, WHATSAPP_NUMBER } = require('./config');
-const { saveJson, loadJson } = require('./cloudinary');
+const { saveJson, loadJson, loadOrders } = require('./cloudinary');
 
 for (const dir of [DATA_DIR]) fs.mkdirSync(dir, { recursive: true });
 
@@ -93,6 +93,7 @@ function saveDB() {
 // Render reinicia la instancia y pierde el sistema de archivos: la copia en
 // Cloudinary es la fuente de verdad al arrancar.
 async function initDB() {
+  let loaded = false;
   try {
     const remote = await loadJson();
     if (remote) {
@@ -100,22 +101,35 @@ async function initDB() {
       db.orders = remote.orders || [];
       db.tokens = remote.tokens || [];
       db.settings = remote.settings || { whatsapp: WHATSAPP_NUMBER };
-      ensureWhatsApp();
-      for (const product of db.products) {
-        if (!Array.isArray(product.images)) {
-          product.images = product.image ? [product.image] : [];
-        }
-      }
-      fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
+      loaded = true;
       console.log('DB restaurada desde Cloudinary');
     } else {
-      fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
       console.log('Sin DB remota: se usa la base local/inicial');
     }
+    ensureWhatsApp();
+    for (const product of db.products || []) {
+      if (!Array.isArray(product.images)) {
+        product.images = product.image ? [product.image] : [];
+      }
+    }
+
+    // Recuperamos los pedidos respaldados por separado. Un fallo al leer la
+    // base principal nunca debe hacer desaparecer pedidos ya confirmados.
+    const backups = await loadOrders();
+    for (const order of backups) {
+      if (!db.orders.some(o => o.id === order.id)) db.orders.push(order);
+    }
+    db.orders.sort((a, b) => b.id - a.id);
+
+    fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
     remoteReady = true;
-    await saveJson(db);
+
+    // Solo reescribimos la copia remota si pudimos leerla. Si la lectura
+    // falló, escribir la base inicial borraría los datos reales.
+    if (loaded) await saveJson(db);
   } catch (e) {
     console.error('No se pudo sincronizar la DB con Cloudinary:', e.message);
+    fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
     remoteReady = true;
   }
 }

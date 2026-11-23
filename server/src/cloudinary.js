@@ -118,4 +118,54 @@ async function loadJson() {
   return null;
 }
 
-module.exports = { uploadImage, saveJson, loadJson, configured };
+/* ---------- Respaldos individuales de pedidos ---------- */
+
+// Cada pedido se guarda como recurso propio. Así, aunque la base principal se
+// sobrescriba con una copia vieja, los pedidos se recuperan al arrancar.
+const ORDER_PREFIX = 'trianmax_orders/order_';
+
+async function saveOrder(order) {
+  if (!configured) return;
+  const params = cloudinary.utils.sign_request({
+    timestamp: Math.floor(Date.now() / 1000),
+    public_id: `${ORDER_PREFIX}${order.id}`,
+    overwrite: true,
+    invalidate: true,
+  });
+  const form = new FormData();
+  for (const [key, value] of Object.entries(params)) form.append(key, String(value));
+  form.append('file', new Blob([JSON.stringify(order)], { type: 'application/json' }), 'order.json');
+
+  const endpoint = `https://api.cloudinary.com/v1_1/${encodeURIComponent(CLOUDINARY_CLOUD_NAME)}/raw/upload`;
+  const response = await fetch(endpoint, { method: 'POST', body: form });
+  if (!response.ok) throw new Error((await response.text()).slice(0, 200) || `Cloudinary ${response.status}`);
+}
+
+async function loadOrders() {
+  if (!configured) return [];
+  try {
+    const result = await cloudinary.api.resources({
+      resource_type: 'raw',
+      type: 'upload',
+      prefix: ORDER_PREFIX,
+      max_results: 500,
+    });
+    const orders = [];
+    for (const resource of result.resources || []) {
+      if (!resource.secure_url) continue;
+      try {
+        const url = `${resource.secure_url}${resource.secure_url.includes('?') ? '&' : '?'}v=${Date.now()}`;
+        const response = await fetch(url);
+        if (!response.ok) continue;
+        const order = JSON.parse(await response.text());
+        if (order && order.id && Array.isArray(order.items)) orders.push(order);
+      } catch (_) {}
+    }
+    return orders;
+  } catch (e) {
+    console.warn('No se pudieron leer los respaldos de pedidos:', e.message || e);
+    return [];
+  }
+}
+
+module.exports = { uploadImage, saveJson, loadJson, saveOrder, loadOrders, configured };
