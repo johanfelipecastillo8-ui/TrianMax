@@ -19,6 +19,13 @@ if (configured) {
   });
 }
 
+// Cloudinary recomienda Basic Auth para llamadas del Upload API hechas desde
+// el servidor: evita problemas de firmas y envía la clave solo por TLS.
+function authHeader() {
+  const token = Buffer.from(`${CLOUDINARY_API_KEY}:${CLOUDINARY_API_SECRET}`).toString('base64');
+  return { Authorization: `Basic ${token}` };
+}
+
 /** Sube bytes a Cloudinary y devuelve la URL pública segura. */
 async function uploadImage(buffer) {
   if (!configured) {
@@ -27,20 +34,15 @@ async function uploadImage(buffer) {
     throw error;
   }
 
-  // Firma los parámetros con el SDK y envía la petición directamente para poder
-  // leer el mensaje real de Cloudinary en errores que el SDK no expone (p. ej. 403).
-  const params = cloudinary.utils.sign_request({
-    timestamp: Math.floor(Date.now() / 1000),
-    folder: CLOUDINARY_FOLDER,
-    overwrite: false,
-  });
-
+  // Enviamos la petición directamente para poder leer el mensaje real de
+  // Cloudinary en errores que el SDK no expone (p. ej. 403).
   const form = new FormData();
-  for (const [key, value] of Object.entries(params)) form.append(key, String(value));
+  form.append('folder', CLOUDINARY_FOLDER);
+  form.append('overwrite', 'false');
   form.append('file', new Blob([buffer], { type: 'image/jpeg' }), 'image.jpg');
 
   const endpoint = `https://api.cloudinary.com/v1_1/${encodeURIComponent(CLOUDINARY_CLOUD_NAME)}/image/upload`;
-  const response = await fetch(endpoint, { method: 'POST', body: form });
+  const response = await fetch(endpoint, { method: 'POST', headers: authHeader(), body: form });
   const text = await response.text();
 
   if (!response.ok) {
@@ -80,20 +82,16 @@ async function latestDeliveryUrl() {
 
 async function saveJson(data) {
   if (!configured) return;
-  const params = cloudinary.utils.sign_request({
-    timestamp: Math.floor(Date.now() / 1000),
-    public_id: DB_PUBLIC_ID,
-    overwrite: true,
-    invalidate: true,
-    // Versión única aunque dos cambios ocurran en el mismo segundo.
-    version: Date.now(),
-  });
   const form = new FormData();
-  for (const [key, value] of Object.entries(params)) form.append(key, String(value));
+  form.append('public_id', DB_PUBLIC_ID);
+  form.append('overwrite', 'true');
+  form.append('invalidate', 'true');
+  // Versión única aunque dos cambios ocurran en el mismo segundo.
+  form.append('version', String(Date.now()));
   form.append('file', new Blob([JSON.stringify(data)], { type: 'application/json' }), 'db.json');
 
   const endpoint = `https://api.cloudinary.com/v1_1/${encodeURIComponent(CLOUDINARY_CLOUD_NAME)}/raw/upload`;
-  const response = await fetch(endpoint, { method: 'POST', body: form });
+  const response = await fetch(endpoint, { method: 'POST', headers: authHeader(), body: form });
   if (!response.ok) throw new Error((await response.text()).slice(0, 200) || `Cloudinary ${response.status}`);
 }
 
@@ -126,18 +124,14 @@ const ORDER_PREFIX = 'trianmax_orders/order_';
 
 async function saveOrder(order) {
   if (!configured) return;
-  const params = cloudinary.utils.sign_request({
-    timestamp: Math.floor(Date.now() / 1000),
-    public_id: `${ORDER_PREFIX}${order.id}`,
-    overwrite: true,
-    invalidate: true,
-  });
   const form = new FormData();
-  for (const [key, value] of Object.entries(params)) form.append(key, String(value));
+  form.append('public_id', `${ORDER_PREFIX}${order.id}`);
+  form.append('overwrite', 'true');
+  form.append('invalidate', 'true');
   form.append('file', new Blob([JSON.stringify(order)], { type: 'application/json' }), 'order.json');
 
   const endpoint = `https://api.cloudinary.com/v1_1/${encodeURIComponent(CLOUDINARY_CLOUD_NAME)}/raw/upload`;
-  const response = await fetch(endpoint, { method: 'POST', body: form });
+  const response = await fetch(endpoint, { method: 'POST', headers: authHeader(), body: form });
   if (!response.ok) throw new Error((await response.text()).slice(0, 200) || `Cloudinary ${response.status}`);
 }
 

@@ -7,9 +7,9 @@ function extractToken(req) {
   return header.startsWith('Bearer ') ? header.slice(7) : null;
 }
 
-function requireAuth(req, res, next) {
+async function requireAuth(req, res, next) {
   const token = extractToken(req);
-  if (token && SettingsModel.hasToken(token)) return next();
+  if (token && await SettingsModel.hasToken(token)) return next();
   return res.status(401).json({ error: 'No autorizado' });
 }
 

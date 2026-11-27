@@ -1,17 +1,17 @@
 'use strict';
 
-const { db, persistDB } = require('../db');
+const { store, persistDB } = require('../db');
 const { saveOrder } = require('../cloudinary');
 const { SHIP_METHODS, PAYMENT_METHODS } = require('../config');
 const ProductModel = require('./product');
 
 class OrderModel {
   static all() {
-    return db.orders;
+    return store.listOrders();
   }
 
   static find(id) {
-    return db.orders.find(o => o.id === id) || null;
+    return store.findOrder(id);
   }
 
   static shipMethods() {
@@ -19,7 +19,7 @@ class OrderModel {
   }
 
   /* Valida items contra el catálogo y calcula totales en servidor. */
-  static build(input) {
+  static async build(input) {
     const name = String(input.name || '').trim();
     const phone = String(input.phone || '').replace(/\D/g, '');
     const address = String(input.address || '').trim();
@@ -40,7 +40,7 @@ class OrderModel {
     let subtotal = 0;
     const orderItems = [];
     for (const item of items) {
-      const product = ProductModel.find(Number(item.id));
+      const product = await ProductModel.find(Number(item.id));
       const qty = Number(item.qty);
       if (!product) return { errors: [`Producto ${item.id} no existe`] };
       if (!Number.isInteger(qty) || qty < 1) return { errors: [`Cantidad inválida para ${product.name}`] };
@@ -70,36 +70,29 @@ class OrderModel {
   }
 
   static async create(order) {
-    // Revalidamos stock y asignamos el id aquí, de forma síncrona y atómica:
-    // dos peticiones que validaron al mismo tiempo no pueden colisionar.
+    // Validación temprana para responder rápido; la transaction del store
+    // vuelve a comprobar stock y precios contra la fuente de verdad.
     for (const item of order.items) {
-      const product = ProductModel.find(item.id);
+      const product = await ProductModel.find(item.id);
       if (!product || product.stock < item.qty) {
         const error = new Error(`Stock insuficiente de ${item.name}`);
         error.code = 'INSUFFICIENT_STOCK';
         throw error;
       }
     }
-    const maxId = db.orders.reduce((m, o) => Math.max(m, Number(o.id) || 0), 1000);
-    order.id = maxId + 1;
-    for (const item of order.items) {
-      const product = ProductModel.find(item.id);
-      product.stock -= item.qty;
-    }
-    db.orders.unshift(order);
-    // Doble escritura: base principal + respaldo propio del pedido.
+    const saved = await store.createOrder(order);
+    // Doble escritura: respaldo general + respaldo propio del pedido.
     await Promise.all([
       persistDB(),
       // Si el respaldo falla, el pedido igual queda en la base principal.
-      saveOrder(order).catch(e => console.error('Error al respaldar el pedido:', e.message)),
+      saveOrder(saved).catch(e => console.error('Error al respaldar el pedido:', e.message)),
     ]);
-    return order;
+    return saved;
   }
 
   static async setStatus(id, status) {
-    const order = OrderModel.find(id);
+    const order = await store.setOrderStatus(id, status);
     if (!order) return null;
-    order.status = status;
     await Promise.all([
       persistDB(),
       // Si el respaldo falla, el pedido igual queda en la base principal.

@@ -1,14 +1,14 @@
 'use strict';
 
-const { db, saveDB } = require('../db');
+const { store, saveDB } = require('../db');
 
 class ProductModel {
   static all() {
-    return db.products;
+    return store.listProducts();
   }
 
   static find(id) {
-    return db.products.find(p => p.id === id) || null;
+    return store.findProduct(id);
   }
 
   static validate(body) {
@@ -53,38 +53,22 @@ class ProductModel {
     };
   }
 
-  static create(data) {
-    const id = db.products.reduce((m, p) => Math.max(m, p.id), 0) + 1;
-    const images = Array.isArray(data.images) ? data.images : [];
-    const product = {
-      id,
-      ...data,
-      images,
-      image: images[0] || null,
-      createdAt: new Date().toISOString(),
-    };
-    db.products.push(product);
+  static async create(data) {
+    const product = await store.createProduct(data);
     saveDB();
     return product;
   }
 
-  static update(id, data) {
-    const product = ProductModel.find(id);
-    if (!product) return null;
-    const images = Array.isArray(data.images)
-      ? data.images
-      : (Array.isArray(product.images) ? product.images : (product.image ? [product.image] : []));
-    Object.assign(product, data, { images, image: images[0] || null });
-    saveDB();
+  static async update(id, data) {
+    const product = await store.updateProduct(id, data);
+    if (product) saveDB();
     return product;
   }
 
-  static remove(id) {
-    const before = db.products.length;
-    db.products = db.products.filter(p => p.id !== id);
-    if (db.products.length === before) return false;
-    saveDB();
-    return true;
+  static async remove(id) {
+    const removed = await store.deleteProduct(id);
+    if (removed) saveDB();
+    return removed;
   }
 }
 

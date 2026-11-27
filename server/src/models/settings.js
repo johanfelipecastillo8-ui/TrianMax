@@ -1,36 +1,34 @@
 'use strict';
 
 const crypto = require('crypto');
-const { db, saveDB } = require('../db');
-const { MAX_TOKENS } = require('../config');
+const { store, saveDB } = require('../db');
 
 const SettingsModel = {
-  getWhatsApp() {
-    return db.settings.whatsapp;
+  async getWhatsApp() {
+    return store.getSetting('whatsapp');
   },
 
-  saveWhatsApp(number) {
+  async saveWhatsApp(number) {
     const wa = String(number || '').replace(/\D/g, '');
     if (wa.length < 9) return null;
-    db.settings.whatsapp = wa;
+    await store.setSetting('whatsapp', wa);
     saveDB();
     return wa;
   },
 
-  createToken() {
+  async createToken() {
     const token = crypto.randomBytes(24).toString('hex');
-    db.tokens.push(token);
-    if (db.tokens.length > MAX_TOKENS) db.tokens = db.tokens.slice(-MAX_TOKENS);
+    await store.createToken(token);
     saveDB();
     return token;
   },
 
-  hasToken(token) {
-    return db.tokens.includes(token);
+  async hasToken(token) {
+    return store.hasToken(token);
   },
 
-  revokeToken(token) {
-    db.tokens = db.tokens.filter(t => t !== token);
+  async revokeToken(token) {
+    await store.revokeToken(token);
     saveDB();
   },
 };
